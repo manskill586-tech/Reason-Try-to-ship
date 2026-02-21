@@ -1,0 +1,2095 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Reason: Mega Expansion</title>
+<style>
+:root {
+    --bg: #050816;
+    --cabinet: #151a3c;
+    --panel: #101737;
+    --accent: #2ef3ff;
+    --accent-2: #ff7b2e;
+    --accent-3: #7bff6a;
+    --danger: #ff477f;
+    --text: #eef5ff;
+    --muted: #91a7cf;
+}
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+    background:
+        radial-gradient(circle at 20% 15%, rgba(46, 243, 255, 0.14), transparent 35%),
+        radial-gradient(circle at 80% 85%, rgba(255, 123, 46, 0.14), transparent 35%),
+        linear-gradient(150deg, #02030a 0%, #090f27 45%, #140f28 100%);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+}
+#cabinetShell {
+    width: min(1500px, 100vw - 24px);
+    height: min(920px, 100vh - 24px);
+    display: grid;
+    grid-template-rows: 80px 1fr 180px;
+    background: linear-gradient(180deg, var(--cabinet) 0%, #111832 100%);
+    border: 4px solid #212a61;
+    outline: 3px solid var(--accent);
+    box-shadow: 0 18px 35px rgba(0, 0, 0, 0.6), 0 0 36px rgba(46, 243, 255, 0.25), inset 0 0 35px rgba(46, 243, 255, 0.08);
+    overflow: hidden;
+}
+#cabinetTop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: linear-gradient(180deg, #182353 0%, #121a3f 100%);
+    border-bottom: 3px solid #273878;
+    gap: 12px;
+}
+.top-left, .top-center, .top-right { display: flex; align-items: center; gap: 10px; }
+.brand { font-size: clamp(16px, 2vw, 24px); letter-spacing: 1px; font-weight: 700; color: var(--accent); text-shadow: 0 0 12px rgba(46, 243, 255, 0.4); }
+.top-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; }
+.select, .input, .btn {
+    border: 1px solid #2e4d9e;
+    background: #0f173d;
+    color: var(--text);
+    padding: 8px 10px;
+    font-size: 12px;
+}
+.btn { cursor: pointer; transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s; }
+.btn:hover { transform: translateY(-1px); border-color: var(--accent); box-shadow: 0 0 10px rgba(46, 243, 255, 0.3); }
+.btn.danger { border-color: #8b2f5c; background: #331329; }
+.btn.accent { border-color: #2b7e88; background: #11343a; }
+.meta-pill { padding: 6px 10px; background: #1a274f; border: 1px solid #385db7; font-size: 12px; white-space: nowrap; }
+#cabinetMain { display: grid; grid-template-columns: 310px 1fr 320px; gap: 10px; padding: 10px; min-height: 0; }
+#cabinetSideLeft, #cabinetSideRight { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+.panel {
+    background: linear-gradient(180deg, var(--panel) 0%, #0b122c 100%);
+    border: 2px solid #2d4f9c;
+    box-shadow: inset 0 0 0 1px rgba(46, 243, 255, 0.14);
+    padding: 10px;
+}
+.panel h3 { margin: 0 0 8px; font-size: 13px; letter-spacing: 0.9px; color: var(--accent); text-transform: uppercase; }
+#playAreaWrap { position: relative; min-height: 0; background: #05081b; border: 2px solid #2e529e; overflow: hidden; }
+#gameCanvas, #edgeWarningLayer { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+#edgeWarningLayer { pointer-events: none; z-index: 6; }
+#message {
+    position: absolute;
+    left: 50%;
+    bottom: 18px;
+    transform: translateX(-50%);
+    z-index: 14;
+    background: rgba(8, 13, 35, 0.95);
+    border: 2px solid var(--accent);
+    color: #fff;
+    padding: 9px 14px;
+    font-size: 13px;
+    display: none;
+    pointer-events: none;
+}
+#mainMenu, #gameOverScreen {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-align: center;
+    background: rgba(4, 8, 24, 0.9);
+    padding: 16px;
+}
+#mainMenu.hidden, #gameOverScreen.hidden, #wavePauseOverlay.hidden, #dialogBox.hidden, .shop-panel.hidden, #rebindCapture.hidden { display: none; }
+.menu-title { font-size: clamp(20px, 3.2vw, 38px); color: var(--accent); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1.4px; }
+.menu-sub { color: var(--muted); font-size: 13px; max-width: 520px; }
+#wavePauseOverlay {
+    position: absolute;
+    inset: 0;
+    z-index: 18;
+    background: rgba(4, 10, 30, 0.84);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+.wave-card { width: min(720px, 100%); background: linear-gradient(180deg, #141d48 0%, #0f1637 100%); border: 2px solid var(--accent-2); padding: 14px; text-align: center; }
+.wave-actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.shop-panel {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: min(360px, calc(100% - 24px));
+    max-height: calc(100% - 24px);
+    overflow: auto;
+    z-index: 19;
+    background: linear-gradient(180deg, #0f1d49 0%, #0c1332 100%);
+    border: 2px solid #3b63c6;
+    padding: 12px;
+    box-shadow: -10px 0 22px rgba(0, 0, 0, 0.45);
+    transform: translateX(26px);
+    opacity: 0;
+}
+.shop-panel:not(.hidden) {
+    animation: shopSlideIn 0.22s ease-out forwards;
+}
+.shop-section { border: 1px solid #2f4f98; padding: 8px; margin-bottom: 8px; background: rgba(10, 18, 44, 0.85); }
+.shop-title { font-size: 12px; color: var(--accent); margin-bottom: 4px; }
+.shop-row { display: flex; justify-content: space-between; gap: 8px; align-items: center; margin: 6px 0; font-size: 12px; }
+#dialogBox { position: absolute; left: 10px; right: 10px; bottom: 10px; z-index: 21; background: rgba(8, 12, 34, 0.96); border: 2px solid var(--accent); padding: 10px; }
+#dialogName { font-weight: 700; color: var(--accent); margin-bottom: 4px; }
+#dialogText { font-size: 14px; margin-bottom: 8px; }
+#dialogChoices { display: flex; flex-wrap: wrap; gap: 8px; }
+.dialog-choice { border: 1px solid #3760be; background: #12204f; color: #fff; padding: 8px 10px; cursor: pointer; }
+.stat-row { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; margin: 4px 0; }
+.stat-row .k { color: var(--muted); }
+#questList { font-size: 12px; max-height: 210px; overflow: auto; display: flex; flex-direction: column; gap: 6px; }
+.quest-item { border-left: 3px solid #2f55aa; padding: 5px 7px; background: rgba(11, 21, 52, 0.8); }
+.quest-item.completed { border-left-color: var(--accent-3); opacity: 0.85; }
+#achievementPanel { min-height: 160px; max-height: 240px; overflow: auto; }
+.achievement-item { border: 1px solid #2a478b; padding: 6px; margin-bottom: 6px; font-size: 11px; background: rgba(12, 21, 53, 0.8); }
+.achievement-item.unlocked { border-color: #2d8555; background: rgba(15, 52, 33, 0.6); }
+#settingsPanel { display: flex; flex-direction: column; gap: 10px; }
+#audioSettings .slider-row, #keybindSettings .bind-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 12px; margin: 5px 0; }
+.bind-btn { min-width: 96px; text-align: center; }
+#rebindCapture { position: absolute; inset: 0; z-index: 30; background: rgba(5, 8, 24, 0.78); display: flex; align-items: center; justify-content: center; text-align: center; padding: 16px; font-size: 15px; }
+#cabinetBottom { border-top: 3px solid #263b75; background: linear-gradient(180deg, #141d48 0%, #0f1637 100%); padding: 10px; display: flex; align-items: center; justify-content: center; }
+#arcadeDeck { width: min(980px, 100%); display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.deck-group { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.dpad { display: grid; grid-template-columns: 58px 58px 58px; grid-template-rows: 58px 58px 58px; gap: 6px; }
+.arcade-btn {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    border: 3px solid #2f4d99;
+    background: radial-gradient(circle at 30% 28%, #2d4f9a 0%, #162857 72%);
+    color: #d8eaff;
+    font-weight: 700;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    box-shadow: 0 4px 0 #0b1431;
+    user-select: none;
+}
+.arcade-btn.pressed { transform: translateY(3px); box-shadow: 0 1px 0 #0b1431; border-color: var(--accent-2); background: radial-gradient(circle at 30% 28%, #ff9f45 0%, #a34e15 72%); }
+.arcade-btn.action { background: radial-gradient(circle at 30% 28%, #2f9cb0 0%, #17626f 72%); }
+.arcade-btn.action.pressed { background: radial-gradient(circle at 30% 28%, #77fff3 0%, #1f8d8a 72%); }
+.dpad .empty { width: 58px; height: 58px; }
+.small-note { font-size: 11px; color: var(--muted); }
+.mode-chip { display: inline-block; font-size: 10px; padding: 4px 6px; border: 1px solid #4468bf; background: #10214f; margin-right: 5px; }
+@keyframes shopSlideIn {
+    from { transform: translateX(34px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+@media (max-width: 1320px) {
+    #cabinetShell { height: auto; min-height: calc(100vh - 24px); grid-template-rows: auto 1fr auto; }
+    #cabinetMain { grid-template-columns: 280px 1fr; grid-template-rows: auto auto; }
+    #cabinetSideRight { grid-column: 1 / span 2; flex-direction: row; flex-wrap: wrap; }
+    #cabinetSideRight .panel { flex: 1 1 300px; }
+}
+@media (max-width: 940px) {
+    #cabinetTop { flex-wrap: wrap; height: auto; }
+    #cabinetMain { grid-template-columns: 1fr; }
+    #cabinetSideLeft, #cabinetSideRight { flex-direction: column; }
+    #playAreaWrap { min-height: 430px; }
+    #arcadeDeck { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div id="cabinetShell">
+    <div id="cabinetTop">
+        <div class="top-left"><div class="brand">Reason Arcade Cabinet</div></div>
+        <div class="top-center">
+            <span class="top-label">Mode</span>
+            <select id="modeSelect" class="select">
+                <option value="story">Story</option>
+                <option value="endless">Endless</option>
+                <option value="bossrush">Boss Rush</option>
+                <option value="daily">Daily</option>
+            </select>
+            <button id="startBtn" class="btn accent">Start Run</button>
+            <button id="menuBtn" class="btn">Main Menu</button>
+            <button id="resetProgressBtn" class="btn danger">Reset Progress</button>
+        </div>
+        <div class="top-right">
+            <div class="meta-pill">Meta Credits: <span id="metaCreditsCurrent">0</span></div>
+            <div class="meta-pill">Daily Seed: <span id="dailySeedText">-</span></div>
+        </div>
+    </div>
+    <div id="cabinetMain">
+        <aside id="cabinetSideLeft">
+            <section id="hudStatsPanel" class="panel">
+                <h3>Run Stats</h3>
+                <div class="stat-row"><span class="k">Health</span><span id="health">100</span></div>
+                <div class="stat-row"><span class="k">Shield</span><span id="shield">0</span></div>
+                <div class="stat-row"><span class="k">Resources</span><span id="resources">0</span></div>
+                <div class="stat-row"><span class="k">Kills</span><span id="kills">0</span></div>
+                <div class="stat-row"><span class="k">Stars</span><span id="stars">0</span></div>
+                <div class="stat-row"><span class="k">Wave</span><span id="waveNumber">1</span></div>
+                <div class="stat-row"><span class="k">Wave Progress</span><span id="waveTimer">0 left</span></div>
+                <div class="stat-row"><span class="k">Score</span><span id="scoreCurrent">0</span></div>
+            </section>
+            <section id="hudModePanel" class="panel">
+                <h3>Mode / Combat</h3>
+                <div class="stat-row"><span class="k">Current Mode</span><span id="currentMode">story</span></div>
+                <div class="stat-row"><span class="k">Modifier</span><span id="modifierName">None</span></div>
+                <div class="stat-row"><span class="k">Weapon</span><span id="currentWeaponName">Starter Pistol</span></div>
+                <div class="stat-row"><span class="k">Ability Z</span><span id="abilityDashCd">Ready</span></div>
+                <div class="stat-row"><span class="k">Ability X</span><span id="abilityShieldCd">Ready</span></div>
+                <div class="stat-row"><span class="k">Ability C</span><span id="abilityEmpCd">Ready</span></div>
+                <div style="margin-top:8px;"><span class="mode-chip">1: Weapon Slot 1</span><span class="mode-chip">2: Slot 2</span><span class="mode-chip">3: Slot 3</span></div>
+            </section>
+            <section id="settingsPanel" class="panel">
+                <h3>Settings</h3>
+                <div id="audioSettings">
+                    <div class="small-note">Audio (WebAudio synth)</div>
+                    <div class="slider-row"><span>Master</span><input class="input" id="masterVolume" type="range" min="0" max="1" step="0.01" /></div>
+                    <div class="slider-row"><span>Music</span><input class="input" id="musicVolume" type="range" min="0" max="1" step="0.01" /></div>
+                    <div class="slider-row"><span>SFX</span><input class="input" id="sfxVolume" type="range" min="0" max="1" step="0.01" /></div>
+                    <div class="slider-row"><span>Mute</span><button id="muteToggleBtn" class="btn bind-btn">OFF</button></div>
+                </div>
+                <div id="keybindSettings" style="margin-top:10px;"><div class="small-note">Keybinds (click to rebind)</div><div id="bindList"></div><button id="resetKeybindsBtn" class="btn" style="margin-top:6px;">Reset Keybinds</button></div>
+            </section>
+        </aside>
+        <div id="playAreaWrap">
+            <canvas id="gameCanvas" width="960" height="540"></canvas>
+            <canvas id="edgeWarningLayer" width="960" height="540"></canvas>
+            <div id="message"></div>
+            <div id="mainMenu">
+                <div class="menu-title">Reason: Mega Expansion</div>
+                <div class="menu-sub">Start a run, clear every enemy in each wave, read absurd space chatter, buy upgrades, and try to look cool while panicking.</div>
+                <button class="btn accent" id="startFromMenuBtn">Start Run</button>
+                <div class="small-note">WASD + Mouse to move/aim, Z/X/C abilities, 1/2/3 weapon slots</div>
+            </div>
+            <div id="gameOverScreen" class="hidden">
+                <div class="menu-title" style="color: var(--danger);">Game Over</div>
+                <div id="gameOverStats" class="menu-sub"></div>
+                <button class="btn accent" id="restartBtn">Restart</button>
+                <button class="btn" id="returnMenuBtn">Back to Menu</button>
+            </div>
+            <div id="wavePauseOverlay" class="hidden">
+                <div class="wave-card">
+                    <h3 style="margin:0 0 8px; color: var(--accent-2);">Wave Complete</h3>
+                    <div id="wavePauseText" style="margin-bottom: 10px;">Confirm next wave when ready.</div>
+                    <div class="wave-actions">
+                        <button class="btn accent" id="confirmWaveBtn">Start Next Wave</button>
+                        <button class="btn" id="openWeaponShopBtn">Weapon Shop</button>
+                        <button class="btn" id="openMetaShopBtn">Meta Shop</button>
+                        <button class="btn" id="openAchievementsBtn">Achievements</button>
+                    </div>
+                </div>
+            </div>
+            <div id="weaponShopPanel" class="shop-panel hidden"></div>
+            <div id="metaShopPanel" class="shop-panel hidden"></div>
+            <div id="dialogBox" class="hidden">
+                <div id="dialogName"></div>
+                <div id="dialogText"></div>
+                <div id="dialogChoices"></div>
+                <div class="small-note" style="margin-top:6px;">Press Enter / Space to continue</div>
+            </div>
+            <div id="rebindCapture" class="hidden">
+                <div>
+                    <div style="font-size: 20px; color: var(--accent); margin-bottom: 8px;">Rebind Key</div>
+                    <div id="rebindCaptureText">Press a key...</div>
+                    <div class="small-note" style="margin-top: 8px;">Esc to cancel</div>
+                </div>
+            </div>
+        </div>
+        <aside id="cabinetSideRight">
+            <section id="hudQuestPanel" class="panel">
+                <h3>Story Quests</h3>
+                <div id="questList"></div>
+            </section>
+            <section id="achievementPanel" class="panel">
+                <h3>Achievements</h3>
+                <div id="achievementList"></div>
+            </section>
+            <section class="panel">
+                <h3>High Scores</h3>
+                <div class="stat-row"><span class="k">Story</span><span id="scoreStory">0</span></div>
+                <div class="stat-row"><span class="k">Endless</span><span id="scoreEndless">0</span></div>
+                <div class="stat-row"><span class="k">Boss Rush</span><span id="scoreBossrush">0</span></div>
+                <div class="stat-row"><span class="k">Daily</span><span id="scoreDaily">0</span></div>
+            </section>
+        </aside>
+    </div>
+    <div id="cabinetBottom">
+        <div id="arcadeDeck">
+            <div class="deck-group">
+                <div class="dpad">
+                    <div class="empty"></div>
+                    <div class="arcade-btn" data-action="move_up">UP</div>
+                    <div class="empty"></div>
+                    <div class="arcade-btn" data-action="move_left">LEFT</div>
+                    <div class="arcade-btn" data-action="move_down">DOWN</div>
+                    <div class="arcade-btn" data-action="move_right">RIGHT</div>
+                    <div class="empty"></div>
+                    <div class="arcade-btn" data-action="fire">FIRE</div>
+                    <div class="empty"></div>
+                </div>
+            </div>
+            <div class="deck-group">
+                <div class="arcade-btn action" data-action="ability_dash">Z</div>
+                <div class="arcade-btn action" data-action="ability_shield">X</div>
+                <div class="arcade-btn action" data-action="ability_emp">C</div>
+                <div class="arcade-btn action" data-action="open_shop">SHOP</div>
+                <div class="arcade-btn action" data-action="confirm_wave">GO</div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+(function () {
+    'use strict';
+    const SAVE_KEY = 'reason_arcade_save_v2';
+    const GAME_MODES = {
+        story: { label: 'Story', waveDuration: 30, bossEvery: 3, storyEnabled: true },
+        endless: { label: 'Endless', waveDuration: 30, bossEvery: 3, storyEnabled: false },
+        bossrush: { label: 'Boss Rush', waveDuration: 24, bossEvery: 1, storyEnabled: false },
+        daily: { label: 'Daily', waveDuration: 28, bossEvery: 3, storyEnabled: false }
+    };
+    const ENEMY_TYPES = {
+        grunt: { id: 'grunt', label: 'Grunt', hp: 18, speed: 70, size: 18, reward: 2, contact: 8, color: '#c65bff' },
+        tank: { id: 'tank', label: 'Tank', hp: 80, speed: 38, size: 27, reward: 6, contact: 14, color: '#ff7b2e' },
+        charger: { id: 'charger', label: 'Charger', hp: 30, speed: 72, size: 20, reward: 4, contact: 10, color: '#ff477f' },
+        sniper: { id: 'sniper', label: 'Sniper', hp: 24, speed: 44, size: 19, reward: 4, contact: 7, color: '#7bff6a' },
+        splitter: { id: 'splitter', label: 'Splitter', hp: 36, speed: 60, size: 22, reward: 5, contact: 9, color: '#43d9ff' },
+        mini: { id: 'mini', label: 'Mini', hp: 9, speed: 88, size: 12, reward: 1, contact: 5, color: '#e49cff' },
+        boss: { id: 'boss', label: 'Boss', hp: 420, speed: 28, size: 48, reward: 28, contact: 24, color: '#ffd66f' }
+    };
+    const WEAPON_CATALOG = {
+        starter_pistol: { id: 'starter_pistol', name: 'Starter Pistol', slot: 1, unlockCost: 0, fireRate: 4.8, speed: 520, spread: 0, pellets: 1, damage: 16, life: 1.25, color: '#2ef3ff' },
+        scatter_shotgun: { id: 'scatter_shotgun', name: 'Scatter Shotgun', slot: 2, unlockCost: 180, fireRate: 1.8, speed: 450, spread: 0.22, pellets: 6, damage: 10, life: 0.7, color: '#ffb15a' },
+        burst_laser: { id: 'burst_laser', name: 'Burst Laser', slot: 3, unlockCost: 320, fireRate: 3.1, speed: 700, spread: 0.04, pellets: 3, burst: true, burstDelay: 0.08, damage: 11, life: 0.95, color: '#7bff6a' }
+    };
+    const ABILITY_CATALOG = {
+        dash: { id: 'dash', name: 'Dash', unlockCost: 120, cooldown: 6, defaultUnlocked: true },
+        shield: { id: 'shield', name: 'Shield', unlockCost: 180, cooldown: 14, defaultUnlocked: false },
+        emp: { id: 'emp', name: 'EMP', unlockCost: 240, cooldown: 18, defaultUnlocked: false }
+    };
+    const WAVE_MODIFIERS = {
+        swarm: { id: 'swarm', name: 'Swarm', apply: function (effects) { effects.spawnRate = 1.55; effects.enemyHp = 0.9; } },
+        thick_skin: { id: 'thick_skin', name: 'Thick Skin', apply: function (effects) { effects.enemyHp = 1.45; } },
+        rapid: { id: 'rapid', name: 'Rapid Hostiles', apply: function (effects) { effects.enemySpeed = 1.25; } },
+        resource_rich: { id: 'resource_rich', name: 'Resource Rich', apply: function (effects) { effects.resourceBonus = 1.8; } },
+        jammed_warning: { id: 'jammed_warning', name: 'Jammed Warning', apply: function (effects) { effects.warningAlpha = 0.45; effects.spawnRate = 1.22; } }
+    };
+    const ELITE_PREFIXES = {
+        burning: { id: 'burning', name: 'Burning', hp: 1.25, speed: 1.05, onContact: function (game, enemy) { game.player.burnTimer = Math.max(game.player.burnTimer, 3.2); game.player.burnDps = 4 + game.enemyWave * 0.18; }, tint: '#ff6a6a' },
+        frozen: { id: 'frozen', name: 'Frozen', hp: 1.18, speed: 1.0, onContact: function (game, enemy) { game.player.slowTimer = Math.max(game.player.slowTimer, 2.4); game.player.slowMult = 0.55; }, tint: '#89d9ff' },
+        vampiric: { id: 'vampiric', name: 'Vampiric', hp: 1.2, speed: 1.08, onContact: function (game, enemy) { enemy.hp = Math.min(enemy.maxHp, enemy.hp + 10); }, tint: '#cc6cff' }
+    };
+    const DEFAULT_KEYBINDS = {
+        move_up: 'KeyW', move_down: 'KeyS', move_left: 'KeyA', move_right: 'KeyD',
+        ability_dash: 'KeyZ', ability_shield: 'KeyX', ability_emp: 'KeyC',
+        weapon_1: 'Digit1', weapon_2: 'Digit2', weapon_3: 'Digit3',
+        confirm_wave: 'Enter', open_shop: 'KeyB', pause_menu: 'Escape'
+    };
+    const KEYBIND_LABELS = {
+        move_up: 'Move Up', move_down: 'Move Down', move_left: 'Move Left', move_right: 'Move Right',
+        ability_dash: 'Ability Dash (Z)', ability_shield: 'Ability Shield (X)', ability_emp: 'Ability EMP (C)',
+        weapon_1: 'Weapon Slot 1', weapon_2: 'Weapon Slot 2', weapon_3: 'Weapon Slot 3',
+        confirm_wave: 'Confirm Wave', open_shop: 'Open Shop', pause_menu: 'Cancel/Back'
+    };
+    const DIALOGS = {
+        intro: [
+            { char: 'Pilot', text: 'Hi. The ship says it runs on neon, snacks, and bad ideas. That feels correct.' },
+            { char: 'Operator', text: 'Between waves, buy upgrades. We survive with confidence and questionable math.' },
+            { char: 'Operator', text: 'Tiny starter bonus, because we are brave beginners:', choices: [{ label: 'Damage +15% this run', effect: { damageMult: 1.15 } }, { label: 'Move speed +20% this run', effect: { speedMult: 1.2 } }] }
+        ],
+        boss_warning: [{ char: 'Operator', text: 'Huge angry space appliance detected. Please dodge politely.' }],
+        final_story: [{ char: 'Operator', text: 'Plot is almost solved. Pick one last weird upgrade:', choices: [{ label: 'Shield starts full', effect: { bonusShield: 40 } }, { label: 'Resource gain +30%', effect: { resourceMult: 1.3 } }] }]
+    };
+    const WAVE_STORY_POOL = [
+        'A moon just applauded your driving. It had tiny gloves.',
+        'Our navigation map now includes a bakery and two black holes.',
+        'The ship AI says: \"Great work, captain potato.\" I think that is praise.',
+        'A comet asked for directions, then exploded from embarrassment.',
+        'Space pirates sent flowers, then forgot why they were mad.',
+        'The engine is humming a lullaby in binary. Very soothing, very cursed.',
+        'A cosmic duck flew by and judged our aim. Harsh but fair.',
+        'The vending machine predicts destiny and mostly offers juice.'
+    ];
+    const STORY_QUESTS = [
+        { id: 1, title: 'Collect 25 resources', type: 'resources', target: 25, current: 0, completed: false },
+        { id: 2, title: 'Destroy 30 enemies', type: 'kills', target: 30, current: 0, completed: false },
+        { id: 3, title: 'Reach wave 5', type: 'wave', target: 5, current: 1, completed: false },
+        { id: 4, title: 'Defeat 2 bosses', type: 'boss_kills', target: 2, current: 0, completed: false }
+    ];
+    const ACHIEVEMENTS = [
+        { id: 'first_kill', name: 'First Spark', desc: 'Destroy 1 enemy', reward: 20, test: (g) => g.kills >= 1 },
+        { id: 'kill_100', name: 'Hunter', desc: 'Destroy 100 enemies total', reward: 80, test: (g) => g.totalRunStats.kills >= 100 },
+        { id: 'resource_150', name: 'Miner', desc: 'Collect 150 resources in one run', reward: 70, test: (g) => g.resources >= 150 },
+        { id: 'wave_5', name: 'Wave Rider', desc: 'Reach wave 5', reward: 60, test: (g) => g.enemyWave >= 5 },
+        { id: 'wave_10', name: 'Neon Survivor', desc: 'Reach wave 10', reward: 120, test: (g) => g.enemyWave >= 10 },
+        { id: 'boss_1', name: 'Boss Breaker', desc: 'Defeat one boss', reward: 100, test: (g) => g.bossKills >= 1 },
+        { id: 'boss_5', name: 'Titan Hunter', desc: 'Defeat five bosses total', reward: 220, test: (g) => g.totalRunStats.bossKills >= 5 },
+        { id: 'unlock_shotgun', name: 'Wide Spread', desc: 'Unlock Scatter Shotgun', reward: 30, test: (g) => g.save.unlockedWeapons.includes('scatter_shotgun') },
+        { id: 'unlock_laser', name: 'Pulse Array', desc: 'Unlock Burst Laser', reward: 50, test: (g) => g.save.unlockedWeapons.includes('burst_laser') },
+        { id: 'all_weapons', name: 'Arsenal', desc: 'Unlock all weapons', reward: 120, test: (g) => ['starter_pistol', 'scatter_shotgun', 'burst_laser'].every((w) => g.save.unlockedWeapons.includes(w)) },
+        { id: 'all_abilities', name: 'Overclocked', desc: 'Unlock all abilities', reward: 130, test: (g) => ['dash', 'shield', 'emp'].every((a) => g.save.unlockedAbilities.includes(a)) },
+        { id: 'daily_finish', name: 'Daily Clear', desc: 'Complete a Daily run (wave 6+)', reward: 90, test: (g) => g.mode === 'daily' && g.enemyWave >= 6 }
+    ];
+    function deepClone(obj) { return JSON.parse(JSON.stringify(obj)); }
+    function getDefaultSave() {
+        return {
+            version: 2,
+            metaCredits: 0,
+            highScores: { story: 0, endless: 0, bossrush: 0, daily: 0 },
+            unlockedWeapons: ['starter_pistol'],
+            unlockedAbilities: ['dash'],
+            audio: { master: 0.7, music: 0.5, sfx: 0.8, muted: false },
+            keybinds: deepClone(DEFAULT_KEYBINDS),
+            achievements: {},
+            daily: { lastDate: '', seed: 0, bestScore: 0 },
+            settings: { difficultyPreset: 'medium' }
+        };
+    }
+    function mergeSave(base, incoming) {
+        const out = deepClone(base);
+        if (!incoming || typeof incoming !== 'object') return out;
+        out.version = 2;
+        out.metaCredits = Number(incoming.metaCredits) || 0;
+        out.highScores = Object.assign(out.highScores, incoming.highScores || {});
+        out.unlockedWeapons = Array.isArray(incoming.unlockedWeapons) ? incoming.unlockedWeapons.slice() : out.unlockedWeapons;
+        out.unlockedAbilities = Array.isArray(incoming.unlockedAbilities) ? incoming.unlockedAbilities.slice() : out.unlockedAbilities;
+        out.audio = Object.assign(out.audio, incoming.audio || {});
+        out.keybinds = Object.assign(out.keybinds, incoming.keybinds || {});
+        out.achievements = Object.assign({}, incoming.achievements || {});
+        out.daily = Object.assign(out.daily, incoming.daily || {});
+        out.settings = Object.assign(out.settings, incoming.settings || {});
+        if (!out.unlockedWeapons.includes('starter_pistol')) out.unlockedWeapons.unshift('starter_pistol');
+        if (!out.unlockedAbilities.includes('dash')) out.unlockedAbilities.unshift('dash');
+        return out;
+    }
+    function loadProgress() {
+        const defaults = getDefaultSave();
+        try {
+            const raw = localStorage.getItem(SAVE_KEY);
+            if (!raw) {
+                localStorage.setItem(SAVE_KEY, JSON.stringify(defaults));
+                return defaults;
+            }
+            const parsed = JSON.parse(raw);
+            const merged = mergeSave(defaults, parsed);
+            localStorage.setItem(SAVE_KEY, JSON.stringify(merged));
+            return merged;
+        } catch (err) {
+            console.error('Failed to load save:', err);
+            localStorage.setItem(SAVE_KEY, JSON.stringify(defaults));
+            return defaults;
+        }
+    }
+    function saveProgress(targetGame) {
+        try {
+            const saveData = targetGame && targetGame.save ? targetGame.save : game.save;
+            localStorage.setItem(SAVE_KEY, JSON.stringify(saveData));
+        } catch (err) {
+            console.error('Failed to save progress:', err);
+        }
+    }
+    function getDailySeed(localDateString) {
+        let h = 2166136261 >>> 0;
+        for (let i = 0; i < localDateString.length; i++) {
+            h ^= localDateString.charCodeAt(i);
+            h = Math.imul(h, 16777619);
+        }
+        return h >>> 0;
+    }
+    function makeRng(seed) {
+        let t = seed >>> 0;
+        return function () {
+            t += 0x6D2B79F5;
+            let x = t;
+            x = Math.imul(x ^ x >>> 15, x | 1);
+            x ^= x + Math.imul(x ^ x >>> 7, x | 61);
+            return ((x ^ x >>> 14) >>> 0) / 4294967296;
+        };
+    }
+    function pickRandom(game, arr) { return arr[Math.floor(game.rand() * arr.length)]; }
+    function createAudioSystem() {
+        const system = {
+            ctx: null, master: null, musicGain: null, sfxGain: null, menuOsc: null, waveOsc: null, bossOsc: null,
+            ensureContext: function (save) {
+                if (this.ctx) return;
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (!AudioCtx) return;
+                this.ctx = new AudioCtx();
+                this.master = this.ctx.createGain();
+                this.musicGain = this.ctx.createGain();
+                this.sfxGain = this.ctx.createGain();
+                this.musicGain.connect(this.master);
+                this.sfxGain.connect(this.master);
+                this.master.connect(this.ctx.destination);
+                const createDrone = (freq) => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.value = freq;
+                    gain.gain.value = 0;
+                    osc.connect(gain);
+                    gain.connect(this.musicGain);
+                    osc.start();
+                    return { osc: osc, gain: gain };
+                };
+                this.menuOsc = createDrone(110);
+                this.waveOsc = createDrone(150);
+                this.bossOsc = createDrone(80);
+                this.applyVolumes(save);
+            },
+            applyVolumes: function (save) {
+                if (!this.master) return;
+                const muteMul = save.audio.muted ? 0 : 1;
+                this.master.gain.setTargetAtTime(save.audio.master * muteMul, this.ctx.currentTime, 0.02);
+                this.musicGain.gain.setTargetAtTime(save.audio.music, this.ctx.currentTime, 0.02);
+                this.sfxGain.gain.setTargetAtTime(save.audio.sfx, this.ctx.currentTime, 0.02);
+            },
+            setMusicState: function (state) {
+                if (!this.menuOsc) return;
+                const now = this.ctx.currentTime;
+                this.menuOsc.gain.gain.setTargetAtTime(state === 'menu' ? 0.08 : 0.0, now, 0.06);
+                this.waveOsc.gain.gain.setTargetAtTime(state === 'wave' ? 0.07 : 0.0, now, 0.06);
+                this.bossOsc.gain.gain.setTargetAtTime(state === 'boss' ? 0.11 : 0.0, now, 0.04);
+            },
+            tone: function (freq, duration, type, volume) {
+                if (!this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = type || 'square';
+                osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                gain.gain.setValueAtTime(volume, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(this.sfxGain);
+                osc.start();
+                osc.stop(this.ctx.currentTime + duration);
+            },
+            uiClick: function () { this.tone(600, 0.07, 'square', 0.05); },
+            shoot: function (weapon) { const freq = weapon.id === 'scatter_shotgun' ? 160 : weapon.id === 'burst_laser' ? 420 : 280; const dur = weapon.id === 'scatter_shotgun' ? 0.1 : 0.06; this.tone(freq, dur, 'square', 0.08); },
+            hit: function () { this.tone(220, 0.05, 'triangle', 0.06); },
+            kill: function () { this.tone(720, 0.08, 'sine', 0.07); },
+            warning: function () { this.tone(520, 0.07, 'sawtooth', 0.05); },
+            bossIntro: function () { this.tone(90, 0.2, 'triangle', 0.1); this.tone(130, 0.22, 'triangle', 0.09); }
+        };
+        return system;
+    }
+    const ui = {
+        canvas: document.getElementById('gameCanvas'), warningCanvas: document.getElementById('edgeWarningLayer'), message: document.getElementById('message'),
+        modeSelect: document.getElementById('modeSelect'), startBtn: document.getElementById('startBtn'), menuBtn: document.getElementById('menuBtn'), resetProgressBtn: document.getElementById('resetProgressBtn'),
+        startFromMenuBtn: document.getElementById('startFromMenuBtn'), restartBtn: document.getElementById('restartBtn'), returnMenuBtn: document.getElementById('returnMenuBtn'),
+        mainMenu: document.getElementById('mainMenu'), gameOver: document.getElementById('gameOverScreen'), gameOverStats: document.getElementById('gameOverStats'),
+        wavePauseOverlay: document.getElementById('wavePauseOverlay'), wavePauseText: document.getElementById('wavePauseText'), confirmWaveBtn: document.getElementById('confirmWaveBtn'),
+        openWeaponShopBtn: document.getElementById('openWeaponShopBtn'), openMetaShopBtn: document.getElementById('openMetaShopBtn'), openAchievementsBtn: document.getElementById('openAchievementsBtn'),
+        weaponShopPanel: document.getElementById('weaponShopPanel'), metaShopPanel: document.getElementById('metaShopPanel'),
+        dialogBox: document.getElementById('dialogBox'), dialogName: document.getElementById('dialogName'), dialogText: document.getElementById('dialogText'), dialogChoices: document.getElementById('dialogChoices'),
+        rebindCapture: document.getElementById('rebindCapture'), rebindCaptureText: document.getElementById('rebindCaptureText'), bindList: document.getElementById('bindList'), resetKeybindsBtn: document.getElementById('resetKeybindsBtn'),
+        muteToggleBtn: document.getElementById('muteToggleBtn'), masterVolume: document.getElementById('masterVolume'), musicVolume: document.getElementById('musicVolume'), sfxVolume: document.getElementById('sfxVolume'),
+        questList: document.getElementById('questList'), achievementList: document.getElementById('achievementList'),
+        metaCreditsCurrent: document.getElementById('metaCreditsCurrent'), dailySeedText: document.getElementById('dailySeedText'),
+        health: document.getElementById('health'), shield: document.getElementById('shield'), resources: document.getElementById('resources'), kills: document.getElementById('kills'), stars: document.getElementById('stars'),
+        waveNumber: document.getElementById('waveNumber'), waveTimer: document.getElementById('waveTimer'), scoreCurrent: document.getElementById('scoreCurrent'), modifierName: document.getElementById('modifierName'),
+        currentWeaponName: document.getElementById('currentWeaponName'), currentMode: document.getElementById('currentMode'), abilityDashCd: document.getElementById('abilityDashCd'), abilityShieldCd: document.getElementById('abilityShieldCd'), abilityEmpCd: document.getElementById('abilityEmpCd'),
+        scoreStory: document.getElementById('scoreStory'), scoreEndless: document.getElementById('scoreEndless'), scoreBossrush: document.getElementById('scoreBossrush'), scoreDaily: document.getElementById('scoreDaily'),
+        arcadeButtons: Array.from(document.querySelectorAll('.arcade-btn'))
+    };
+    const ctx = ui.canvas.getContext('2d');
+    const warningCtx = ui.warningCanvas.getContext('2d');
+    const game = {
+        state: 'menu', mode: 'story', modeConfig: deepClone(GAME_MODES.story), save: loadProgress(), rand: Math.random, rngSeed: 0,
+        width: ui.canvas.width, height: ui.canvas.height,
+        keysDown: new Set(), mouse: { x: ui.canvas.width / 2, y: ui.canvas.height / 2, down: false }, awaitingBindAction: null,
+        pauseReasons: { dialog: false, wave: false }, dialog: { activeSet: null, index: 0, choiceLocked: false },
+        player: null, enemies: [], bullets: [], enemyProjectiles: [], resourcesOnMap: [], particles: [], spawnTickets: [], starsBg: [],
+        enemyWave: 1, waveDuration: 30, waveElapsed: 0, pendingWave: null, activeWaveModifier: null, waveEffects: null,
+        waveSpawnTarget: 0, waveSpawned: 0, waveKilled: 0,
+        spawnAccumulator: 0, nextTicketId: 1, nextEntityId: 1, warningPulseTimer: 0,
+        resources: 0, kills: 0, starsCollected: 0, score: 0, gameTime: 0, bossKills: 0,
+        runWeaponLevels: { speed: 0, health: 0, bulletSpeed: 0, fireRate: 0, damage: 0 }, currentWeaponId: 'starter_pistol', lastShotAt: 0,
+        abilityState: { dash: { cd: 0, active: 0 }, shield: { cd: 0, active: 0 }, emp: { cd: 0, active: 0 } },
+        choiceBuff: { damageMult: 1, speedMult: 1, resourceMult: 1, bonusShield: 0 },
+        quests: deepClone(STORY_QUESTS), winDialogShown: false, totalRunStats: { kills: 0, bossKills: 0, resources: 0 },
+        audio: createAudioSystem(), messageTimer: 0, lastTime: performance.now()
+    };
+    function showMessage(text, color) {
+        ui.message.textContent = text;
+        ui.message.style.display = 'block';
+        ui.message.style.borderColor = color || '#2ef3ff';
+        ui.message.style.color = color || '#ffffff';
+        game.messageTimer = 2.8;
+    }
+    function updateMessage(dt) {
+        if (game.messageTimer > 0) {
+            game.messageTimer -= dt;
+            if (game.messageTimer <= 0) ui.message.style.display = 'none';
+        }
+    }
+    function applySaveToUI(g) {
+        ui.metaCreditsCurrent.textContent = Math.floor(g.save.metaCredits);
+        ui.scoreStory.textContent = Math.floor(g.save.highScores.story || 0);
+        ui.scoreEndless.textContent = Math.floor(g.save.highScores.endless || 0);
+        ui.scoreBossrush.textContent = Math.floor(g.save.highScores.bossrush || 0);
+        ui.scoreDaily.textContent = Math.floor(g.save.highScores.daily || 0);
+        ui.masterVolume.value = g.save.audio.master;
+        ui.musicVolume.value = g.save.audio.music;
+        ui.sfxVolume.value = g.save.audio.sfx;
+        ui.muteToggleBtn.textContent = g.save.audio.muted ? 'ON' : 'OFF';
+        ui.dailySeedText.textContent = g.rngSeed ? String(g.rngSeed) : '-';
+    }
+    function setupStars() {
+        game.starsBg = [];
+        for (let i = 0; i < 110; i++) {
+            game.starsBg.push({ x: Math.random() * game.width, y: Math.random() * game.height, s: Math.random() * 2 + 0.3, v: Math.random() * 24 + 8 });
+        }
+    }
+    function setMode(mode) {
+        game.mode = mode;
+        game.modeConfig = deepClone(GAME_MODES[mode] || GAME_MODES.story);
+        game.waveDuration = game.modeConfig.waveDuration;
+        ui.currentMode.textContent = game.mode;
+    }
+    function getWaveEnemyCountNoobStyle(waveNum) {
+        // simple beginner math: each wave gets more enemies
+        let c = 7 + waveNum * 3;
+        if (game.mode === 'endless') c += 2;
+        if (game.mode === 'daily') c += 1;
+        if (game.mode === 'bossrush') c = 5 + waveNum * 2;
+        return Math.max(6, Math.min(170, Math.floor(c)));
+    }
+    function setupWaveByNoobMath(waveNum) {
+        game.waveSpawnTarget = getWaveEnemyCountNoobStyle(waveNum);
+        game.waveSpawned = 0;
+        game.waveKilled = 0;
+        game.spawnAccumulator = 0;
+    }
+    function getWaveLeftCountSimple() {
+        const notQueuedYet = Math.max(0, game.waveSpawnTarget - game.waveSpawned);
+        return notQueuedYet + game.spawnTickets.length + game.enemies.length;
+    }
+    function makeNiceAbsurdWaveDialog(waveNum) {
+        const idx = Math.abs((waveNum - 1) % WAVE_STORY_POOL.length);
+        const lines = [
+            { char: 'Pilot', text: 'Wave ' + waveNum + ' cleared. Nobody panic, we are somehow professionals now.' },
+            { char: 'Operator', text: WAVE_STORY_POOL[idx] }
+        ];
+        if (waveNum % 3 === 0) {
+            lines.push({
+                char: 'Intern',
+                text: 'Intern bonus menu is open. Please choose one dramatic nonsense buff:',
+                choices: [
+                    { label: 'Tiny damage boost (+8%)', effect: { damageMult: 1.08 } },
+                    { label: 'Tiny speed boost (+10%)', effect: { speedMult: 1.1 } }
+                ]
+            });
+        }
+        return lines;
+    }
+    function setupRandomForMode() {
+        if (game.mode === 'daily') {
+            const localDate = new Date();
+            const key = localDate.getFullYear() + '-' + String(localDate.getMonth() + 1).padStart(2, '0') + '-' + String(localDate.getDate()).padStart(2, '0');
+            const seed = getDailySeed(key);
+            game.rngSeed = seed;
+            game.rand = makeRng(seed);
+            game.save.daily.lastDate = key;
+            game.save.daily.seed = seed;
+            ui.dailySeedText.textContent = String(seed);
+        } else {
+            game.rngSeed = 0;
+            game.rand = Math.random;
+            ui.dailySeedText.textContent = '-';
+        }
+    }
+    function resetRunState() {
+        game.player = {
+            x: game.width / 2, y: game.height / 2, radius: 16, baseSpeed: 160,
+            hpMax: 100, hp: 100, shieldMax: 50, shield: 0, angle: 0,
+            invuln: 0, burnTimer: 0, burnDps: 0, slowTimer: 0, slowMult: 1,
+            dashVelocityX: 0, dashVelocityY: 0
+        };
+        game.enemies = [];
+        game.bullets = [];
+        game.enemyProjectiles = [];
+        game.resourcesOnMap = [];
+        game.particles = [];
+        game.spawnTickets = [];
+        game.pauseReasons.dialog = false;
+        game.pauseReasons.wave = false;
+        game.dialog.activeSet = null;
+        game.dialog.index = 0;
+        game.dialog.choiceLocked = false;
+        ui.dialogBox.classList.add('hidden');
+        ui.wavePauseOverlay.classList.add('hidden');
+        ui.weaponShopPanel.classList.add('hidden');
+        ui.metaShopPanel.classList.add('hidden');
+        game.enemyWave = 1;
+        game.waveElapsed = 0;
+        game.pendingWave = null;
+        game.activeWaveModifier = null;
+        game.waveEffects = { spawnRate: 1, enemyHp: 1, enemySpeed: 1, resourceBonus: 1, warningAlpha: 1 };
+        game.resources = 0;
+        game.kills = 0;
+        game.starsCollected = 0;
+        game.score = 0;
+        game.gameTime = 0;
+        game.bossKills = 0;
+        game.totalRunStats = { kills: 0, bossKills: 0, resources: 0 };
+        game.runWeaponLevels = { speed: 0, health: 0, bulletSpeed: 0, fireRate: 0, damage: 0 };
+        game.spawnAccumulator = 0;
+        game.currentWeaponId = game.save.unlockedWeapons.includes('starter_pistol') ? 'starter_pistol' : (game.save.unlockedWeapons[0] || 'starter_pistol');
+        game.lastShotAt = 0;
+        game.abilityState = { dash: { cd: 0, active: 0 }, shield: { cd: 0, active: 0 }, emp: { cd: 0, active: 0 } };
+        game.choiceBuff = { damageMult: 1, speedMult: 1, resourceMult: 1, bonusShield: 0 };
+        game.quests = deepClone(STORY_QUESTS);
+        game.winDialogShown = false;
+        game.nextTicketId = 1;
+        game.nextEntityId = 1;
+        game.warningPulseTimer = 0;
+        setupWaveByNoobMath(1);
+    }
+    function startGame() {
+        setMode(ui.modeSelect.value);
+        setupRandomForMode();
+        resetRunState();
+        applyWaveModifier(1);
+        game.state = 'playing';
+        ui.mainMenu.classList.add('hidden');
+        ui.gameOver.classList.add('hidden');
+        ui.wavePauseOverlay.classList.add('hidden');
+        updateHUD();
+        renderQuests();
+        renderAchievements();
+        renderWeaponShop(game);
+        renderMetaShop(game);
+        if (game.modeConfig.storyEnabled) showDialog(DIALOGS.intro);
+        else showMessage('Run started: ' + GAME_MODES[game.mode].label, '#2ef3ff');
+        game.audio.ensureContext(game.save);
+        game.audio.setMusicState('wave');
+        saveProgress(game);
+    }
+    function goToMenu() {
+        game.state = 'menu';
+        game.pauseReasons.wave = false;
+        game.pauseReasons.dialog = false;
+        ui.mainMenu.classList.remove('hidden');
+        ui.gameOver.classList.add('hidden');
+        ui.wavePauseOverlay.classList.add('hidden');
+        ui.dialogBox.classList.add('hidden');
+        ui.weaponShopPanel.classList.add('hidden');
+        ui.metaShopPanel.classList.add('hidden');
+        game.audio.setMusicState('menu');
+        updateHUD();
+    }
+    function endRun() {
+        game.state = 'dead';
+        game.pauseReasons.wave = false;
+        game.pauseReasons.dialog = false;
+        const runScore = Math.floor(game.score + game.kills * 6 + game.enemyWave * 24 + game.resources * 1.5);
+        const metaReward = Math.max(20, Math.floor(runScore / 16));
+        game.save.metaCredits += metaReward;
+        const oldScore = game.save.highScores[game.mode] || 0;
+        if (runScore > oldScore) game.save.highScores[game.mode] = runScore;
+        if (game.mode === 'daily') game.save.daily.bestScore = Math.max(game.save.daily.bestScore || 0, runScore);
+        saveProgress(game);
+        applySaveToUI(game);
+        ui.gameOverStats.textContent = 'Score: ' + runScore + ' | Wave: ' + game.enemyWave + ' | Kills: ' + game.kills + ' | Meta reward: +' + metaReward;
+        ui.gameOver.classList.remove('hidden');
+        ui.mainMenu.classList.add('hidden');
+        game.audio.setMusicState('menu');
+    }
+    function scheduleEnemySpawn(typeId, edge, position, etaMs, isElite, elitePrefix) {
+        const now = performance.now();
+        const ticket = { id: game.nextTicketId++, typeId: typeId, edge: edge, position: position, spawnAt: now + etaMs, isElite: !!isElite, elitePrefix: elitePrefix || null };
+        game.spawnTickets.push(ticket);
+        return ticket;
+    }
+    function spawnEnemyFromSchedule(spawnTicket) {
+        const type = ENEMY_TYPES[spawnTicket.typeId] || ENEMY_TYPES.grunt;
+        let x = 0;
+        let y = 0;
+        const margin = type.size + 12;
+        if (spawnTicket.edge === 'top') { x = spawnTicket.position; y = -margin; }
+        else if (spawnTicket.edge === 'right') { x = game.width + margin; y = spawnTicket.position; }
+        else if (spawnTicket.edge === 'bottom') { x = spawnTicket.position; y = game.height + margin; }
+        else { x = -margin; y = spawnTicket.position; }
+        const baseScale = 1 + (game.enemyWave - 1) * 0.12;
+        let hp = type.hp * baseScale * game.waveEffects.enemyHp;
+        let speed = type.speed * (1 + (game.enemyWave - 1) * 0.035) * game.waveEffects.enemySpeed;
+        let eliteData = null;
+        if (spawnTicket.isElite && spawnTicket.typeId !== 'boss' && spawnTicket.elitePrefix && ELITE_PREFIXES[spawnTicket.elitePrefix]) {
+            eliteData = ELITE_PREFIXES[spawnTicket.elitePrefix];
+            hp *= eliteData.hp;
+            speed *= eliteData.speed;
+        }
+        if (spawnTicket.typeId === 'boss') {
+            hp = type.hp * (6 + game.enemyWave * 0.75);
+            speed = type.speed * 0.9;
+        }
+        game.enemies.push({
+            id: game.nextEntityId++, typeId: type.id, x: x, y: y, hp: hp, maxHp: hp, speed: speed,
+            size: type.size, reward: type.reward, contactDamage: type.contact, color: type.color,
+            elitePrefix: eliteData ? eliteData.id : null, eliteData: eliteData,
+            cooldown: 0, dashTimer: 0, telegraph: 0, stunned: 0, splitDone: false
+        });
+    }
+    function renderEdgeWarnings(nowMs) {
+        warningCtx.clearRect(0, 0, game.width, game.height);
+        const alphaMul = game.waveEffects.warningAlpha;
+        let highPriority = false;
+        game.spawnTickets.forEach((ticket) => {
+            const remain = ticket.spawnAt - nowMs;
+            if (remain > 1800 || remain < 0) return;
+            const t = 1 - (remain / 1800);
+            const pulse = 0.35 + 0.65 * Math.abs(Math.sin((nowMs + ticket.id * 91) / 130));
+            const alpha = Math.min(1, pulse * alphaMul);
+            let px = 0, py = 0, angle = 0;
+            if (ticket.edge === 'top') { px = ticket.position; py = 12; angle = Math.PI; }
+            else if (ticket.edge === 'right') { px = game.width - 12; py = ticket.position; angle = -Math.PI / 2; }
+            else if (ticket.edge === 'bottom') { px = ticket.position; py = game.height - 12; angle = 0; }
+            else { px = 12; py = ticket.position; angle = Math.PI / 2; }
+            warningCtx.save();
+            warningCtx.translate(px, py);
+            warningCtx.rotate(angle);
+            warningCtx.globalAlpha = alpha;
+            warningCtx.fillStyle = remain < 700 ? '#ff477f' : '#ffb15a';
+            warningCtx.beginPath();
+            warningCtx.moveTo(0, -18 - t * 5);
+            warningCtx.lineTo(-10, 8 + t * 3);
+            warningCtx.lineTo(10, 8 + t * 3);
+            warningCtx.closePath();
+            warningCtx.fill();
+            warningCtx.restore();
+            if (remain < 800) highPriority = true;
+        });
+        if (highPriority && nowMs > game.warningPulseTimer) {
+            game.warningPulseTimer = nowMs + 420;
+            game.audio.warning();
+        }
+    }
+    function getRandomEdgeAndPosition() {
+        const edge = pickRandom(game, ['top', 'right', 'bottom', 'left']);
+        if (edge === 'top' || edge === 'bottom') return { edge: edge, pos: game.rand() * game.width };
+        return { edge: edge, pos: game.rand() * game.height };
+    }
+    function queueRandomEnemySpawn() {
+        const pool = ['grunt'];
+        if (game.enemyWave >= 2) pool.push('tank');
+        if (game.enemyWave >= 3) pool.push('charger');
+        if (game.enemyWave >= 4) pool.push('sniper');
+        if (game.enemyWave >= 5) pool.push('splitter');
+        if (game.mode === 'bossrush') pool.push('charger', 'sniper');
+        const typeId = pickRandom(game, pool);
+        const ep = getRandomEdgeAndPosition();
+        const eliteChance = Math.min(0.30, 0.10 + Math.max(0, game.enemyWave - 4) * 0.02);
+        const isElite = game.enemyWave >= 4 && game.rand() < eliteChance;
+        const elitePrefix = isElite ? pickRandom(game, Object.keys(ELITE_PREFIXES)) : null;
+        const eta = 550 + game.rand() * 1200;
+        scheduleEnemySpawn(typeId, ep.edge, ep.pos, eta, isElite, elitePrefix);
+    }
+    function applyWaveModifier(waveIndex) {
+        game.waveEffects = { spawnRate: 1, enemyHp: 1, enemySpeed: 1, resourceBonus: 1, warningAlpha: 1 };
+        game.activeWaveModifier = null;
+        if (waveIndex < 2) { ui.modifierName.textContent = 'None'; return; }
+        const keys = Object.keys(WAVE_MODIFIERS);
+        const pick = pickRandom(game, keys);
+        const modifier = WAVE_MODIFIERS[pick];
+        modifier.apply(game.waveEffects);
+        game.activeWaveModifier = modifier.id;
+        ui.modifierName.textContent = modifier.name;
+        showMessage('Wave modifier: ' + modifier.name, '#ffb15a');
+    }
+    function spawnBossForWave(waveIndex) {
+        const ep = getRandomEdgeAndPosition();
+        scheduleEnemySpawn('boss', ep.edge, ep.pos, 1400, false, null);
+        showMessage('Boss incoming!', '#ff477f');
+        game.audio.bossIntro();
+        if (game.modeConfig.storyEnabled && waveIndex >= 3) setTimeout(function () { if (game.state === 'playing') showDialog(DIALOGS.boss_warning); }, 400);
+    }
+    function fireWeapon(weaponId, originX, originY, angle) {
+        const weapon = WEAPON_CATALOG[weaponId];
+        if (!weapon) return false;
+        const now = performance.now() / 1000;
+        const fireRate = weapon.fireRate + game.runWeaponLevels.fireRate * 0.45;
+        if (now - game.lastShotAt < 1 / fireRate) return false;
+        const damageBoost = 1 + game.runWeaponLevels.damage * 0.14;
+        const dmgMult = damageBoost * game.choiceBuff.damageMult;
+        const speedBoost = 1 + game.runWeaponLevels.bulletSpeed * 0.12;
+        game.lastShotAt = now;
+        const shots = [];
+        if (weapon.burst) {
+            for (let b = 0; b < weapon.pellets; b++) shots.push({ delay: weapon.burstDelay * b, spread: (b - (weapon.pellets - 1) / 2) * weapon.spread });
+        } else {
+            for (let i = 0; i < weapon.pellets; i++) shots.push({ delay: 0, spread: ((i + 0.5) / weapon.pellets - 0.5) * weapon.spread * 2 });
+        }
+        shots.forEach((s) => {
+            const spawnShot = function () {
+                const a = angle + s.spread;
+                game.bullets.push({
+                    x: originX + Math.cos(a) * 19, y: originY + Math.sin(a) * 19,
+                    vx: Math.cos(a) * weapon.speed * speedBoost, vy: Math.sin(a) * weapon.speed * speedBoost,
+                    life: weapon.life, damage: weapon.damage * dmgMult, color: weapon.color,
+                    radius: weapon.id === 'scatter_shotgun' ? 2.5 : 3
+                });
+            };
+            if (s.delay <= 0) spawnShot(); else setTimeout(spawnShot, s.delay * 1000);
+        });
+        game.audio.shoot(weapon);
+        return true;
+    }
+    function activateAbility(abilityId) {
+        const ability = ABILITY_CATALOG[abilityId];
+        if (!ability) return false;
+        if (!game.save.unlockedAbilities.includes(abilityId)) { showMessage('Ability locked in Meta Shop', '#ff477f'); return false; }
+        const slot = game.abilityState[abilityId];
+        if (!slot || slot.cd > 0) return false;
+        if (abilityId === 'dash') {
+            const dir = getMovementDir();
+            const a = dir.len > 0 ? Math.atan2(dir.y, dir.x) : game.player.angle;
+            game.player.dashVelocityX = Math.cos(a) * 460;
+            game.player.dashVelocityY = Math.sin(a) * 460;
+            slot.active = 0.2;
+            slot.cd = ability.cooldown;
+            showMessage('Dash activated', '#2ef3ff');
+            return true;
+        }
+        if (abilityId === 'shield') {
+            slot.active = 3.4;
+            slot.cd = ability.cooldown;
+            game.player.shield = Math.min(game.player.shieldMax, game.player.shield + 35);
+            showMessage('Shield online', '#7bff6a');
+            return true;
+        }
+        if (abilityId === 'emp') {
+            slot.active = 0.35;
+            slot.cd = ability.cooldown;
+            game.enemies.forEach((enemy) => {
+                const dx = enemy.x - game.player.x;
+                const dy = enemy.y - game.player.y;
+                const d = Math.hypot(dx, dy);
+                if (d < 190) { enemy.stunned = Math.max(enemy.stunned, 2.1); enemy.hp -= 18 + game.enemyWave * 1.4; }
+            });
+            showMessage('EMP pulse emitted', '#89d9ff');
+            return true;
+        }
+        return false;
+    }
+    const RUN_UPGRADES = {
+        damage: { id: 'damage', name: 'Damage Boost', base: 18, step: 14 },
+        fireRate: { id: 'fireRate', name: 'Fire Rate', base: 16, step: 12 },
+        bulletSpeed: { id: 'bulletSpeed', name: 'Bullet Speed', base: 14, step: 10 },
+        speed: { id: 'speed', name: 'Move Speed', base: 16, step: 11 },
+        health: { id: 'health', name: 'Hull Reinforce', base: 22, step: 16 }
+    };
+    function clamp(value, min, max) {
+        return Math.max(min, Math.min(max, value));
+    }
+    function formatCode(code) {
+        if (!code) return '-';
+        if (code.startsWith('Key')) return code.slice(3);
+        if (code.startsWith('Digit')) return code.slice(5);
+        if (code.startsWith('Arrow')) return code.slice(5);
+        if (code === 'Space') return 'Space';
+        return code;
+    }
+    function formatCd(seconds) {
+        if (seconds <= 0) return 'Ready';
+        return seconds < 1 ? seconds.toFixed(1) + 's' : Math.ceil(seconds) + 's';
+    }
+    function getActionCode(action) {
+        return game.save.keybinds[action] || DEFAULT_KEYBINDS[action] || '';
+    }
+    function getActionAliases(action) {
+        if (action === 'move_up') return ['ArrowUp'];
+        if (action === 'move_down') return ['ArrowDown'];
+        if (action === 'move_left') return ['ArrowLeft'];
+        if (action === 'move_right') return ['ArrowRight'];
+        if (action === 'confirm_wave') return ['Space'];
+        return [];
+    }
+    function codeMatchesAction(code, action) {
+        if (code === getActionCode(action)) return true;
+        const aliases = getActionAliases(action);
+        return aliases.includes(code);
+    }
+    function isActionPressed(action) {
+        if (game.keysDown.has(getActionCode(action))) return true;
+        const aliases = getActionAliases(action);
+        for (let i = 0; i < aliases.length; i++) {
+            if (game.keysDown.has(aliases[i])) return true;
+        }
+        return false;
+    }
+    function isFirePressed() {
+        return game.mouse.down || game.keysDown.has('Space');
+    }
+    function getMovementDir() {
+        let x = 0;
+        let y = 0;
+        if (isActionPressed('move_left')) x -= 1;
+        if (isActionPressed('move_right')) x += 1;
+        if (isActionPressed('move_up')) y -= 1;
+        if (isActionPressed('move_down')) y += 1;
+        const len = Math.hypot(x, y);
+        if (len > 0) {
+            x /= len;
+            y /= len;
+        }
+        return { x: x, y: y, len: len };
+    }
+    function setArcadeButtonPressed(action, pressed) {
+        ui.arcadeButtons.forEach((btn) => {
+            if (btn.dataset.action === action) btn.classList.toggle('pressed', !!pressed);
+        });
+    }
+    function updateArcadeDeck() {
+        setArcadeButtonPressed('move_up', isActionPressed('move_up'));
+        setArcadeButtonPressed('move_down', isActionPressed('move_down'));
+        setArcadeButtonPressed('move_left', isActionPressed('move_left'));
+        setArcadeButtonPressed('move_right', isActionPressed('move_right'));
+        setArcadeButtonPressed('fire', isFirePressed());
+        setArcadeButtonPressed('ability_dash', isActionPressed('ability_dash'));
+        setArcadeButtonPressed('ability_shield', isActionPressed('ability_shield'));
+        setArcadeButtonPressed('ability_emp', isActionPressed('ability_emp'));
+        setArcadeButtonPressed('open_shop', isActionPressed('open_shop'));
+        setArcadeButtonPressed('confirm_wave', isActionPressed('confirm_wave'));
+    }
+    function updateHUD() {
+        if (!game.player) return;
+        ui.health.textContent = Math.max(0, Math.round(game.player.hp)) + ' / ' + Math.round(game.player.hpMax);
+        ui.shield.textContent = Math.max(0, Math.round(game.player.shield));
+        ui.resources.textContent = Math.floor(game.resources);
+        ui.kills.textContent = Math.floor(game.kills);
+        ui.stars.textContent = Math.floor(game.starsCollected);
+        ui.waveNumber.textContent = String(game.enemyWave);
+        ui.waveTimer.textContent = getWaveLeftCountSimple() + ' left';
+        ui.scoreCurrent.textContent = Math.floor(game.score);
+        ui.modifierName.textContent = game.activeWaveModifier ? WAVE_MODIFIERS[game.activeWaveModifier].name : 'None';
+        ui.currentWeaponName.textContent = WEAPON_CATALOG[game.currentWeaponId] ? WEAPON_CATALOG[game.currentWeaponId].name : 'Unknown';
+        ui.abilityDashCd.textContent = formatCd(game.abilityState.dash.cd);
+        ui.abilityShieldCd.textContent = formatCd(game.abilityState.shield.cd);
+        ui.abilityEmpCd.textContent = formatCd(game.abilityState.emp.cd);
+    }
+    function ensureAchievementState() {
+        ACHIEVEMENTS.forEach((a) => {
+            if (!game.save.achievements[a.id]) {
+                game.save.achievements[a.id] = { unlocked: false, unlockedAt: '' };
+            }
+        });
+    }
+    function renderAchievements() {
+        ensureAchievementState();
+        ui.achievementList.innerHTML = ACHIEVEMENTS.map((a) => {
+            const state = game.save.achievements[a.id];
+            const cls = state && state.unlocked ? 'achievement-item unlocked' : 'achievement-item';
+            const stamp = state && state.unlockedAt ? 'Unlocked: ' + new Date(state.unlockedAt).toLocaleString() : 'Locked';
+            return '<div class="' + cls + '"><strong>' + a.name + '</strong><br/>' + a.desc + '<br/><span class="small-note">' + stamp + ' | Reward: ' + a.reward + ' MC</span></div>';
+        }).join('');
+    }
+    function renderQuests() {
+        if (!game.modeConfig.storyEnabled) {
+            ui.questList.innerHTML = '<div class="small-note">Story quests are disabled in this mode.</div>';
+            return;
+        }
+        ui.questList.innerHTML = game.quests.map((q) => {
+            const cls = q.completed ? 'quest-item completed' : 'quest-item';
+            return '<div class="' + cls + '">' + q.title + ' <div class="small-note">' + Math.min(q.current, q.target) + ' / ' + q.target + '</div></div>';
+        }).join('');
+    }
+    function updateQuests() {
+        if (!game.modeConfig.storyEnabled) return;
+        let changed = false;
+        game.quests.forEach((q) => {
+            if (q.type === 'resources') q.current = Math.floor(game.totalRunStats.resources);
+            if (q.type === 'kills') q.current = Math.floor(game.totalRunStats.kills);
+            if (q.type === 'wave') q.current = Math.floor(game.enemyWave);
+            if (q.type === 'boss_kills') q.current = Math.floor(game.totalRunStats.bossKills);
+            if (!q.completed && q.current >= q.target) {
+                q.completed = true;
+                game.resources += 14;
+                changed = true;
+                showMessage('Quest complete: ' + q.title + ' (+14 resources)', '#7bff6a');
+            }
+        });
+        if (changed) {
+            renderQuests();
+            saveProgress(game);
+        }
+        if (!game.winDialogShown && game.quests.every((q) => q.completed)) {
+            game.winDialogShown = true;
+            setTimeout(function () {
+                if (game.state === 'playing') showDialog(DIALOGS.final_story);
+            }, 400);
+        }
+    }
+    function updateAchievements() {
+        ensureAchievementState();
+        let changed = false;
+        ACHIEVEMENTS.forEach((a) => {
+            const state = game.save.achievements[a.id];
+            if (!state.unlocked && a.test(game)) {
+                state.unlocked = true;
+                state.unlockedAt = new Date().toISOString();
+                game.save.metaCredits += a.reward;
+                changed = true;
+                showMessage('Achievement: ' + a.name + ' (+' + a.reward + ' MC)', '#7bff6a');
+            }
+        });
+        if (changed) {
+            applySaveToUI(game);
+            renderAchievements();
+            renderWeaponShop(game);
+            renderMetaShop(game);
+            saveProgress(game);
+        }
+    }
+    function applyChoiceEffect(effect) {
+        if (!effect) return;
+        if (effect.damageMult) game.choiceBuff.damageMult *= effect.damageMult;
+        if (effect.speedMult) game.choiceBuff.speedMult *= effect.speedMult;
+        if (effect.resourceMult) game.choiceBuff.resourceMult *= effect.resourceMult;
+        if (effect.bonusShield) {
+            game.choiceBuff.bonusShield += effect.bonusShield;
+            game.player.shield = Math.min(game.player.shieldMax, game.player.shield + effect.bonusShield);
+        }
+    }
+    function showDialog(dialogSet) {
+        if (!Array.isArray(dialogSet) || !dialogSet.length) return;
+        game.dialog.activeSet = dialogSet;
+        game.dialog.index = 0;
+        game.dialog.choiceLocked = false;
+        game.pauseReasons.dialog = true;
+        ui.dialogBox.classList.remove('hidden');
+        renderDialogStep();
+    }
+    function renderDialogStep() {
+        const step = game.dialog.activeSet ? game.dialog.activeSet[game.dialog.index] : null;
+        if (!step) {
+            hideDialog();
+            return;
+        }
+        ui.dialogName.textContent = step.char || 'System';
+        ui.dialogText.textContent = step.text || '';
+        ui.dialogChoices.innerHTML = '';
+        game.dialog.choiceLocked = false;
+        if (Array.isArray(step.choices) && step.choices.length) {
+            game.dialog.choiceLocked = true;
+            step.choices.forEach((choice) => {
+                const b = document.createElement('button');
+                b.className = 'dialog-choice';
+                b.textContent = choice.label;
+                b.addEventListener('click', function () {
+                    applyChoiceEffect(choice.effect || {});
+                    game.dialog.choiceLocked = false;
+                    nextDialog();
+                });
+                ui.dialogChoices.appendChild(b);
+            });
+        }
+    }
+    function nextDialog() {
+        if (!game.dialog.activeSet) return;
+        const step = game.dialog.activeSet[game.dialog.index];
+        if (step && step.choices && game.dialog.choiceLocked) return;
+        game.dialog.index += 1;
+        if (game.dialog.index >= game.dialog.activeSet.length) {
+            hideDialog();
+            return;
+        }
+        renderDialogStep();
+    }
+    function hideDialog() {
+        game.dialog.activeSet = null;
+        game.dialog.index = 0;
+        game.dialog.choiceLocked = false;
+        game.pauseReasons.dialog = false;
+        ui.dialogBox.classList.add('hidden');
+    }
+    function getWeaponBySlot(slot) {
+        const found = Object.values(WEAPON_CATALOG).find((w) => w.slot === slot);
+        return found ? found.id : null;
+    }
+    function equipWeapon(weaponId) {
+        if (!WEAPON_CATALOG[weaponId]) return;
+        if (!game.save.unlockedWeapons.includes(weaponId)) {
+            showMessage('Weapon is locked. Buy it first.', '#ff477f');
+            return;
+        }
+        game.currentWeaponId = weaponId;
+        ui.currentWeaponName.textContent = WEAPON_CATALOG[weaponId].name;
+        showMessage('Equipped: ' + WEAPON_CATALOG[weaponId].name, '#2ef3ff');
+    }
+    function tryEquipBySlot(slot) {
+        const id = getWeaponBySlot(slot);
+        if (id) equipWeapon(id);
+    }
+    function getRunUpgradeCost(upgradeId) {
+        const cfg = RUN_UPGRADES[upgradeId];
+        if (!cfg) return 9999;
+        const level = game.runWeaponLevels[upgradeId] || 0;
+        return Math.floor(cfg.base + level * cfg.step);
+    }
+    function buyRunUpgrade(upgradeId) {
+        if (game.state !== 'playing' || !game.pauseReasons.wave) {
+            showMessage('Run upgrades are available during wave pause.', '#ffb15a');
+            return;
+        }
+        const cfg = RUN_UPGRADES[upgradeId];
+        if (!cfg) return;
+        const cost = getRunUpgradeCost(upgradeId);
+        if (game.resources < cost) {
+            showMessage('Not enough resources.', '#ff477f');
+            return;
+        }
+        game.resources -= cost;
+        game.runWeaponLevels[upgradeId] = (game.runWeaponLevels[upgradeId] || 0) + 1;
+        if (upgradeId === 'health') {
+            game.player.hpMax += 10;
+            game.player.hp = Math.min(game.player.hpMax, game.player.hp + 10);
+        }
+        showMessage(cfg.name + ' upgraded', '#7bff6a');
+        renderWeaponShop(game);
+        updateHUD();
+    }
+    function unlockWeapon(weaponId) {
+        const w = WEAPON_CATALOG[weaponId];
+        if (!w) return;
+        if (game.save.unlockedWeapons.includes(weaponId)) {
+            equipWeapon(weaponId);
+            return;
+        }
+        if (game.save.metaCredits < w.unlockCost) {
+            showMessage('Not enough Meta Credits.', '#ff477f');
+            return;
+        }
+        game.save.metaCredits -= w.unlockCost;
+        game.save.unlockedWeapons.push(weaponId);
+        applySaveToUI(game);
+        renderWeaponShop(game);
+        updateAchievements();
+        saveProgress(game);
+        showMessage(w.name + ' unlocked permanently', '#7bff6a');
+    }
+    function unlockAbility(abilityId) {
+        const a = ABILITY_CATALOG[abilityId];
+        if (!a) return;
+        if (game.save.unlockedAbilities.includes(abilityId)) return;
+        if (game.save.metaCredits < a.unlockCost) {
+            showMessage('Not enough Meta Credits.', '#ff477f');
+            return;
+        }
+        game.save.metaCredits -= a.unlockCost;
+        game.save.unlockedAbilities.push(abilityId);
+        applySaveToUI(game);
+        renderMetaShop(game);
+        updateAchievements();
+        saveProgress(game);
+        showMessage(a.name + ' unlocked permanently', '#7bff6a');
+    }
+    function renderWeaponShop() {
+        const weaponRows = Object.values(WEAPON_CATALOG).map((w) => {
+            const unlocked = game.save.unlockedWeapons.includes(w.id);
+            let actionHtml = '';
+            if (unlocked) actionHtml = '<button class="btn" data-equip-weapon="' + w.id + '">Equip</button>';
+            else actionHtml = '<button class="btn accent" data-unlock-weapon="' + w.id + '">Buy ' + w.unlockCost + ' MC</button>';
+            return '<div class="shop-row"><span>' + w.name + '</span><span>' + actionHtml + '</span></div>';
+        }).join('');
+        const upgradeRows = Object.values(RUN_UPGRADES).map((u) => {
+            const lvl = game.runWeaponLevels[u.id] || 0;
+            const cost = getRunUpgradeCost(u.id);
+            return '<div class="shop-row"><span>' + u.name + ' Lv.' + lvl + '</span><span><button class="btn" data-run-upgrade="' + u.id + '">Buy ' + cost + '</button></span></div>';
+        }).join('');
+        ui.weaponShopPanel.innerHTML = '' +
+            '<h3 style="margin:0 0 8px;color:var(--accent);">Weapon Shop</h3>' +
+            '<div class="shop-section"><div class="shop-title">Permanent Unlocks (Meta Credits)</div>' + weaponRows + '</div>' +
+            '<div class="shop-section"><div class="shop-title">Run Upgrades (Resources)</div>' + upgradeRows + '</div>' +
+            '<div class="shop-row"><span>Resources</span><strong>' + Math.floor(game.resources) + '</strong></div>' +
+            '<div class="shop-row"><span>Meta Credits</span><strong>' + Math.floor(game.save.metaCredits) + '</strong></div>' +
+            '<button class="btn" data-close-shop="weapon">Close</button>';
+    }
+    function renderMetaShop() {
+        const abilityRows = Object.values(ABILITY_CATALOG).map((a) => {
+            const unlocked = game.save.unlockedAbilities.includes(a.id);
+            let actionHtml = unlocked ? '<span class="small-note">Unlocked</span>' : '<button class="btn accent" data-unlock-ability="' + a.id + '">Buy ' + a.unlockCost + ' MC</button>';
+            return '<div class="shop-row"><span>' + a.name + '</span><span>' + actionHtml + '</span></div>';
+        }).join('');
+        ui.metaShopPanel.innerHTML = '' +
+            '<h3 style="margin:0 0 8px;color:var(--accent);">Meta Shop</h3>' +
+            '<div class="shop-section"><div class="shop-title">Permanent Ability Unlocks</div>' + abilityRows + '</div>' +
+            '<div class="shop-section"><div class="shop-title">Progress</div>' +
+            '<div class="shop-row"><span>Difficulty</span><span>' + game.save.settings.difficultyPreset + '</span></div>' +
+            '<div class="shop-row"><span>Meta Credits</span><strong>' + Math.floor(game.save.metaCredits) + '</strong></div></div>' +
+            '<button class="btn" data-close-shop="meta">Close</button>';
+    }
+    function showWeaponShop(show) {
+        if (show && !game.pauseReasons.wave) {
+            showMessage('Open shop during wave pause.', '#ffb15a');
+            return;
+        }
+        if (show) renderWeaponShop(game);
+        ui.weaponShopPanel.classList.toggle('hidden', !show);
+        if (show) ui.metaShopPanel.classList.add('hidden');
+    }
+    function showMetaShop(show) {
+        if (show && !game.pauseReasons.wave) {
+            showMessage('Open shop during wave pause.', '#ffb15a');
+            return;
+        }
+        if (show) renderMetaShop(game);
+        ui.metaShopPanel.classList.toggle('hidden', !show);
+        if (show) ui.weaponShopPanel.classList.add('hidden');
+    }
+    function startWavePause() {
+        if (game.pauseReasons.wave || game.state !== 'playing') return;
+        const leftForNow = getWaveLeftCountSimple();
+        if (leftForNow > 0) return;
+        game.pauseReasons.wave = true;
+        game.pendingWave = game.enemyWave + 1;
+        game.spawnTickets = [];
+        ui.wavePauseText.textContent = 'Wave ' + game.enemyWave + ' complete. Enemies defeated: ' + game.waveKilled + '/' + game.waveSpawnTarget + '. Confirm Wave ' + game.pendingWave + ' when ready.';
+        ui.wavePauseOverlay.classList.remove('hidden');
+        ui.weaponShopPanel.classList.add('hidden');
+        ui.metaShopPanel.classList.add('hidden');
+        showMessage('Wave paused. Shop is available.', '#ffb15a');
+        game.audio.setMusicState('menu');
+        showDialog(makeNiceAbsurdWaveDialog(game.enemyWave));
+        renderWeaponShop(game);
+        renderMetaShop(game);
+        saveProgress(game);
+    }
+    function confirmNextWave() {
+        if (!game.pauseReasons.wave || game.state !== 'playing') return;
+        game.pauseReasons.wave = false;
+        game.enemyWave = game.pendingWave || (game.enemyWave + 1);
+        game.pendingWave = null;
+        game.waveElapsed = 0;
+        setupWaveByNoobMath(game.enemyWave);
+        ui.wavePauseOverlay.classList.add('hidden');
+        ui.weaponShopPanel.classList.add('hidden');
+        ui.metaShopPanel.classList.add('hidden');
+        applyWaveModifier(game.enemyWave);
+        if (game.enemyWave % game.modeConfig.bossEvery === 0) spawnBossForWave(game.enemyWave);
+        else game.audio.setMusicState('wave');
+        showMessage('Wave ' + game.enemyWave + ' started', '#2ef3ff');
+        updateHUD();
+        saveProgress(game);
+    }
+    function spawnResource(x, y, rewardValue) {
+        const chunks = Math.max(1, Math.min(8, Math.round(rewardValue / 2)));
+        let left = rewardValue;
+        for (let i = 0; i < chunks; i++) {
+            const value = i === chunks - 1 ? left : Math.max(1, Math.floor(rewardValue / chunks));
+            left -= value;
+            const angle = (Math.PI * 2 * i) / chunks + game.rand() * 0.5;
+            const speed = 35 + game.rand() * 55;
+            game.resourcesOnMap.push({
+                x: x, y: y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, value: value, r: 6, life: 8
+            });
+        }
+    }
+    function spawnParticles(x, y, color, count) {
+        for (let i = 0; i < count; i++) {
+            const angle = game.rand() * Math.PI * 2;
+            const speed = 35 + game.rand() * 130;
+            game.particles.push({
+                x: x, y: y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, life: 0.2 + game.rand() * 0.5, maxLife: 0.7, color: color
+            });
+        }
+    }
+    function damagePlayer(amount, bypassInvuln) {
+        if (game.state !== 'playing' || !game.player) return;
+        if (!bypassInvuln && game.player.invuln > 0) return;
+        let dmg = amount;
+        if (game.abilityState.shield.active > 0) dmg *= 0.62;
+        if (game.player.shield > 0) {
+            const absorb = Math.min(game.player.shield, dmg);
+            game.player.shield -= absorb;
+            dmg -= absorb;
+        }
+        if (dmg > 0) game.player.hp -= dmg;
+        if (!bypassInvuln) game.player.invuln = 0.34;
+        if (game.player.hp <= 0) {
+            game.player.hp = 0;
+            updateHUD();
+            endRun();
+        }
+    }
+    function handleEnemyDeath(enemy, index) {
+        if (enemy.typeId === 'splitter' && !enemy.splitDone) {
+            enemy.splitDone = true;
+            for (let i = 0; i < 2; i++) {
+                const angle = game.rand() * Math.PI * 2;
+                game.enemies.push({
+                    id: game.nextEntityId++, typeId: 'mini', x: enemy.x + Math.cos(angle) * 8, y: enemy.y + Math.sin(angle) * 8,
+                    hp: ENEMY_TYPES.mini.hp, maxHp: ENEMY_TYPES.mini.hp, speed: ENEMY_TYPES.mini.speed + game.enemyWave * 0.6,
+                    size: ENEMY_TYPES.mini.size, reward: ENEMY_TYPES.mini.reward, contactDamage: ENEMY_TYPES.mini.contact,
+                    color: ENEMY_TYPES.mini.color, elitePrefix: null, eliteData: null,
+                    cooldown: 0, dashTimer: 0, telegraph: 0, stunned: 0, splitDone: true, touchCd: 0
+                });
+            }
+        }
+        if (enemy.typeId === 'boss') {
+            game.bossKills += 1;
+            game.totalRunStats.bossKills += 1;
+            game.audio.setMusicState('wave');
+        }
+        game.kills += 1;
+        game.waveKilled += 1;
+        game.totalRunStats.kills += 1;
+        game.score += 20 + game.enemyWave * 3;
+        const reward = Math.max(1, Math.floor(enemy.reward * game.waveEffects.resourceBonus * game.choiceBuff.resourceMult));
+        spawnResource(enemy.x, enemy.y, reward);
+        spawnParticles(enemy.x, enemy.y, enemy.eliteData ? enemy.eliteData.tint : enemy.color, enemy.typeId === 'boss' ? 36 : 12);
+        game.enemies.splice(index, 1);
+        game.audio.kill();
+    }
+    function updateSpawnQueue(nowMs) {
+        for (let i = game.spawnTickets.length - 1; i >= 0; i--) {
+            const ticket = game.spawnTickets[i];
+            if (ticket.spawnAt <= nowMs) {
+                spawnEnemyFromSchedule(ticket);
+                if (ticket.typeId === 'boss') game.audio.setMusicState('boss');
+                game.spawnTickets.splice(i, 1);
+            }
+        }
+    }
+    function updatePlayer(dt) {
+        if (!game.player) return;
+        const dir = getMovementDir();
+        let speed = game.player.baseSpeed * (1 + game.runWeaponLevels.speed * 0.08) * game.choiceBuff.speedMult;
+        if (game.player.slowTimer > 0) speed *= game.player.slowMult;
+        game.player.x += dir.x * speed * dt;
+        game.player.y += dir.y * speed * dt;
+        if (game.player.dashVelocityX || game.player.dashVelocityY) {
+            game.player.x += game.player.dashVelocityX * dt;
+            game.player.y += game.player.dashVelocityY * dt;
+            game.player.dashVelocityX *= Math.pow(0.08, dt);
+            game.player.dashVelocityY *= Math.pow(0.08, dt);
+            if (Math.abs(game.player.dashVelocityX) < 2) game.player.dashVelocityX = 0;
+            if (Math.abs(game.player.dashVelocityY) < 2) game.player.dashVelocityY = 0;
+        }
+        game.player.x = clamp(game.player.x, game.player.radius + 2, game.width - game.player.radius - 2);
+        game.player.y = clamp(game.player.y, game.player.radius + 2, game.height - game.player.radius - 2);
+        game.player.angle = Math.atan2(game.mouse.y - game.player.y, game.mouse.x - game.player.x);
+        if (isFirePressed()) fireWeapon(game.currentWeaponId, game.player.x, game.player.y, game.player.angle);
+        if (game.player.invuln > 0) game.player.invuln -= dt;
+        if (game.player.burnTimer > 0) {
+            game.player.burnTimer -= dt;
+            damagePlayer(game.player.burnDps * dt, true);
+        }
+        if (game.player.slowTimer > 0) {
+            game.player.slowTimer -= dt;
+            if (game.player.slowTimer <= 0) game.player.slowMult = 1;
+        }
+        Object.keys(game.abilityState).forEach((k) => {
+            const slot = game.abilityState[k];
+            if (slot.cd > 0) slot.cd -= dt;
+            if (slot.active > 0) slot.active -= dt;
+        });
+        if (game.abilityState.shield.active > 0) {
+            game.player.shield = Math.min(game.player.shieldMax, game.player.shield + dt * 4.5);
+        }
+    }
+    function updateBullets(dt) {
+        for (let i = game.bullets.length - 1; i >= 0; i--) {
+            const b = game.bullets[i];
+            b.x += b.vx * dt;
+            b.y += b.vy * dt;
+            b.life -= dt;
+            if (b.life <= 0 || b.x < -30 || b.y < -30 || b.x > game.width + 30 || b.y > game.height + 30) {
+                game.bullets.splice(i, 1);
+                continue;
+            }
+            let hit = false;
+            for (let e = game.enemies.length - 1; e >= 0; e--) {
+                const enemy = game.enemies[e];
+                const dx = enemy.x - b.x;
+                const dy = enemy.y - b.y;
+                const dist = Math.hypot(dx, dy);
+                if (dist < enemy.size + b.radius) {
+                    enemy.hp -= b.damage;
+                    game.audio.hit();
+                    spawnParticles(b.x, b.y, b.color, 3);
+                    hit = true;
+                    if (enemy.hp <= 0) handleEnemyDeath(enemy, e);
+                    break;
+                }
+            }
+            if (hit) game.bullets.splice(i, 1);
+        }
+    }
+    function updateEnemyProjectiles(dt) {
+        for (let i = game.enemyProjectiles.length - 1; i >= 0; i--) {
+            const p = game.enemyProjectiles[i];
+            p.x += p.vx * dt;
+            p.y += p.vy * dt;
+            p.life -= dt;
+            if (p.life <= 0 || p.x < -25 || p.y < -25 || p.x > game.width + 25 || p.y > game.height + 25) {
+                game.enemyProjectiles.splice(i, 1);
+                continue;
+            }
+            const dx = p.x - game.player.x;
+            const dy = p.y - game.player.y;
+            if (Math.hypot(dx, dy) < game.player.radius + p.r) {
+                damagePlayer(p.damage);
+                game.enemyProjectiles.splice(i, 1);
+            }
+        }
+    }
+    function updateEnemies(dt) {
+        for (let i = game.enemies.length - 1; i >= 0; i--) {
+            const enemy = game.enemies[i];
+            if (enemy.hp <= 0) {
+                handleEnemyDeath(enemy, i);
+                continue;
+            }
+            if (enemy.touchCd > 0) enemy.touchCd -= dt;
+            if (enemy.cooldown > 0) enemy.cooldown -= dt;
+            if (enemy.stunned > 0) {
+                enemy.stunned -= dt;
+            } else {
+                const dx = game.player.x - enemy.x;
+                const dy = game.player.y - enemy.y;
+                const dist = Math.max(0.0001, Math.hypot(dx, dy));
+                const ux = dx / dist;
+                const uy = dy / dist;
+                if (enemy.typeId === 'grunt' || enemy.typeId === 'tank' || enemy.typeId === 'splitter' || enemy.typeId === 'mini') {
+                    enemy.x += ux * enemy.speed * dt;
+                    enemy.y += uy * enemy.speed * dt;
+                } else if (enemy.typeId === 'charger') {
+                    if (enemy.telegraph > 0) {
+                        enemy.telegraph -= dt;
+                        if (enemy.telegraph <= 0) {
+                            enemy.dashTimer = 0.35;
+                            enemy.dashVx = ux * enemy.speed * 5.8;
+                            enemy.dashVy = uy * enemy.speed * 5.8;
+                        }
+                    } else if (enemy.dashTimer > 0) {
+                        enemy.dashTimer -= dt;
+                        enemy.x += enemy.dashVx * dt;
+                        enemy.y += enemy.dashVy * dt;
+                    } else {
+                        enemy.x += ux * enemy.speed * 0.7 * dt;
+                        enemy.y += uy * enemy.speed * 0.7 * dt;
+                        if (enemy.cooldown <= 0) {
+                            enemy.cooldown = 2.8;
+                            enemy.telegraph = 0.45;
+                        }
+                    }
+                } else if (enemy.typeId === 'sniper') {
+                    if (dist < 170) {
+                        enemy.x -= ux * enemy.speed * dt;
+                        enemy.y -= uy * enemy.speed * dt;
+                    } else if (dist > 260) {
+                        enemy.x += ux * enemy.speed * dt;
+                        enemy.y += uy * enemy.speed * dt;
+                    }
+                    if (enemy.cooldown <= 0 && dist < 390) {
+                        enemy.cooldown = 1.9;
+                        const speed = 250 + game.enemyWave * 4.5;
+                        game.enemyProjectiles.push({
+                            x: enemy.x, y: enemy.y, vx: ux * speed, vy: uy * speed,
+                            r: 4, damage: 8 + game.enemyWave * 0.8, color: '#aef7a8', life: 2.8
+                        });
+                    }
+                } else if (enemy.typeId === 'boss') {
+                    enemy.x += ux * enemy.speed * dt;
+                    enemy.y += uy * enemy.speed * dt;
+                    if (enemy.cooldown <= 0) {
+                        enemy.cooldown = 1.35;
+                        const volley = 6 + Math.min(8, Math.floor(game.enemyWave / 2));
+                        for (let s = 0; s < volley; s++) {
+                            const ang = (Math.PI * 2 * s) / volley + game.rand() * 0.22;
+                            const sp = 190 + game.enemyWave * 5;
+                            game.enemyProjectiles.push({
+                                x: enemy.x, y: enemy.y, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp,
+                                r: 5, damage: 7 + game.enemyWave * 1.3, color: '#ffd66f', life: 3.5
+                            });
+                        }
+                    }
+                }
+            }
+            const cdx = enemy.x - game.player.x;
+            const cdy = enemy.y - game.player.y;
+            const touchDist = enemy.size + game.player.radius;
+            if (Math.hypot(cdx, cdy) < touchDist && (enemy.touchCd || 0) <= 0) {
+                enemy.touchCd = 0.45;
+                damagePlayer(enemy.contactDamage);
+                if (enemy.eliteData && enemy.eliteData.onContact) enemy.eliteData.onContact(game, enemy);
+            }
+            if (enemy.x < -130) enemy.x = -130;
+            if (enemy.y < -130) enemy.y = -130;
+            if (enemy.x > game.width + 130) enemy.x = game.width + 130;
+            if (enemy.y > game.height + 130) enemy.y = game.height + 130;
+        }
+    }
+    function updateResources(dt) {
+        for (let i = game.resourcesOnMap.length - 1; i >= 0; i--) {
+            const r = game.resourcesOnMap[i];
+            const dx = game.player.x - r.x;
+            const dy = game.player.y - r.y;
+            const dist = Math.hypot(dx, dy);
+            if (dist < 120) {
+                const pull = 250 / Math.max(25, dist);
+                r.vx += (dx / Math.max(dist, 0.0001)) * pull * dt;
+                r.vy += (dy / Math.max(dist, 0.0001)) * pull * dt;
+            }
+            r.x += r.vx * dt;
+            r.y += r.vy * dt;
+            r.vx *= Math.pow(0.12, dt);
+            r.vy *= Math.pow(0.12, dt);
+            r.life -= dt;
+            if (dist < game.player.radius + r.r + 2) {
+                game.resources += r.value;
+                game.starsCollected += 1;
+                game.totalRunStats.resources += r.value;
+                game.score += r.value * 2;
+                game.resourcesOnMap.splice(i, 1);
+                continue;
+            }
+            if (r.life <= 0) game.resourcesOnMap.splice(i, 1);
+        }
+    }
+    function updateParticles(dt) {
+        for (let i = game.particles.length - 1; i >= 0; i--) {
+            const p = game.particles[i];
+            p.x += p.vx * dt;
+            p.y += p.vy * dt;
+            p.life -= dt;
+            if (p.life <= 0) {
+                game.particles.splice(i, 1);
+                continue;
+            }
+            p.vx *= Math.pow(0.02, dt);
+            p.vy *= Math.pow(0.02, dt);
+        }
+    }
+    function updateWaveFlow(dt, nowMs) {
+        updateSpawnQueue(nowMs);
+        game.waveElapsed += dt;
+        let baseRate = 0.65 + game.enemyWave * 0.17;
+        if (game.mode === 'bossrush') baseRate *= 0.82;
+        if (game.waveSpawned < game.waveSpawnTarget) {
+            game.spawnAccumulator += dt * baseRate * game.waveEffects.spawnRate;
+        }
+        while (game.spawnAccumulator >= 1 && game.waveSpawned < game.waveSpawnTarget) {
+            queueRandomEnemySpawn();
+            game.waveSpawned += 1;
+            game.spawnAccumulator -= 1;
+        }
+        const allQueued = game.waveSpawned >= game.waveSpawnTarget;
+        const noPending = game.spawnTickets.length === 0;
+        const noLiveEnemies = game.enemies.length === 0;
+        if (allQueued && noPending && noLiveEnemies) {
+            startWavePause();
+        }
+    }
+    function drawBackground(dt) {
+        ctx.fillStyle = '#040813';
+        ctx.fillRect(0, 0, game.width, game.height);
+        for (let i = 0; i < game.starsBg.length; i++) {
+            const s = game.starsBg[i];
+            s.y += s.v * dt;
+            if (s.y > game.height + 3) {
+                s.y = -2;
+                s.x = game.rand() * game.width;
+            }
+            ctx.fillStyle = 'rgba(140,180,255,0.45)';
+            ctx.fillRect(s.x, s.y, s.s, s.s);
+        }
+        const grad = ctx.createLinearGradient(0, 0, 0, game.height);
+        grad.addColorStop(0, 'rgba(0,0,0,0)');
+        grad.addColorStop(1, 'rgba(0,12,25,0.35)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, game.width, game.height);
+    }
+    function drawResources() {
+        game.resourcesOnMap.forEach((r) => {
+            ctx.beginPath();
+            ctx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
+            ctx.fillStyle = '#ffd66f';
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(255, 214, 111, 0.45)';
+            ctx.stroke();
+        });
+    }
+    function drawBullets() {
+        game.bullets.forEach((b) => {
+            ctx.beginPath();
+            ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+            ctx.fillStyle = b.color;
+            ctx.fill();
+        });
+    }
+    function drawEnemyProjectiles() {
+        game.enemyProjectiles.forEach((p) => {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fillStyle = p.color || '#ff9f9f';
+            ctx.fill();
+        });
+    }
+    function drawEnemies() {
+        game.enemies.forEach((enemy) => {
+            const color = enemy.eliteData ? enemy.eliteData.tint : enemy.color;
+            ctx.beginPath();
+            ctx.arc(enemy.x, enemy.y, enemy.size, 0, Math.PI * 2);
+            ctx.fillStyle = color;
+            ctx.fill();
+            if (enemy.typeId === 'charger' && enemy.telegraph > 0) {
+                ctx.beginPath();
+                ctx.arc(enemy.x, enemy.y, enemy.size + 9, 0, Math.PI * 2);
+                ctx.strokeStyle = '#ff8f6e';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+            const hpW = enemy.size * 2;
+            const hpX = enemy.x - hpW / 2;
+            const hpY = enemy.y - enemy.size - 11;
+            ctx.fillStyle = 'rgba(0,0,0,0.5)';
+            ctx.fillRect(hpX, hpY, hpW, 4);
+            ctx.fillStyle = '#7bff6a';
+            ctx.fillRect(hpX, hpY, hpW * clamp(enemy.hp / enemy.maxHp, 0, 1), 4);
+            if (enemy.eliteData) {
+                ctx.fillStyle = '#fff';
+                ctx.font = '10px Trebuchet MS';
+                ctx.textAlign = 'center';
+                ctx.fillText(enemy.eliteData.name, enemy.x, enemy.y - enemy.size - 16);
+            }
+            if (enemy.typeId === 'boss') {
+                ctx.strokeStyle = 'rgba(255,214,111,0.7)';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(enemy.x, enemy.y, enemy.size + 6, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+        });
+    }
+    function drawParticles() {
+        game.particles.forEach((p) => {
+            ctx.globalAlpha = Math.max(0, p.life / p.maxLife);
+            ctx.fillStyle = p.color;
+            ctx.fillRect(p.x, p.y, 2, 2);
+            ctx.globalAlpha = 1;
+        });
+    }
+    function drawPlayer() {
+        if (!game.player) return;
+        const p = game.player;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.angle);
+        if (p.invuln > 0) {
+            ctx.globalAlpha = 0.5 + 0.5 * Math.sin(performance.now() / 60);
+        }
+        ctx.beginPath();
+        ctx.moveTo(22, 0);
+        ctx.lineTo(-12, -12);
+        ctx.lineTo(-6, 0);
+        ctx.lineTo(-12, 12);
+        ctx.closePath();
+        ctx.fillStyle = '#2ef3ff';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(-6, 0);
+        ctx.lineTo(-16, -5);
+        ctx.lineTo(-16, 5);
+        ctx.closePath();
+        ctx.fillStyle = '#1a89a2';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(4, 0, 4, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+        ctx.restore();
+        if (game.abilityState.shield.active > 0) {
+            ctx.strokeStyle = 'rgba(123,255,106,0.75)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius + 7, 0, Math.PI * 2);
+            ctx.stroke();
+        }
+        if (game.abilityState.emp.active > 0) {
+            const k = game.abilityState.emp.active / ABILITY_CATALOG.emp.cooldown;
+            ctx.strokeStyle = 'rgba(137,217,255,0.55)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 190 * (1 - k) + 20, 0, Math.PI * 2);
+            ctx.stroke();
+        }
+    }
+    function drawScene(dt) {
+        drawBackground(dt);
+        if (game.player) {
+            drawResources();
+            drawBullets();
+            drawEnemyProjectiles();
+            drawEnemies();
+            drawParticles();
+            drawPlayer();
+        }
+    }
+    function resizeCanvas() {
+        const rect = ui.canvas.parentElement.getBoundingClientRect();
+        const w = Math.max(620, Math.floor(rect.width));
+        const h = Math.max(360, Math.floor(rect.height));
+        ui.canvas.width = w;
+        ui.canvas.height = h;
+        ui.warningCanvas.width = w;
+        ui.warningCanvas.height = h;
+        game.width = w;
+        game.height = h;
+        if (game.player) {
+            game.player.x = clamp(game.player.x, game.player.radius + 2, game.width - game.player.radius - 2);
+            game.player.y = clamp(game.player.y, game.player.radius + 2, game.height - game.player.radius - 2);
+        }
+        setupStars();
+    }
+    function toCanvasCoords(ev) {
+        const rect = ui.canvas.getBoundingClientRect();
+        const x = (ev.clientX - rect.left) * (ui.canvas.width / rect.width);
+        const y = (ev.clientY - rect.top) * (ui.canvas.height / rect.height);
+        return { x: clamp(x, 0, ui.canvas.width), y: clamp(y, 0, ui.canvas.height) };
+    }
+    function startRebind(action) {
+        game.awaitingBindAction = action;
+        ui.rebindCapture.classList.remove('hidden');
+        ui.rebindCaptureText.textContent = 'Press key for: ' + KEYBIND_LABELS[action];
+    }
+    function finishRebind(cancelled) {
+        if (cancelled) showMessage('Rebind canceled', '#ffb15a');
+        game.awaitingBindAction = null;
+        ui.rebindCapture.classList.add('hidden');
+    }
+    function renderKeybindSettings() {
+        ui.bindList.innerHTML = Object.keys(KEYBIND_LABELS).map((action) => {
+            const code = getActionCode(action);
+            return '<div class="bind-row"><span>' + KEYBIND_LABELS[action] + '</span><button class="btn bind-btn" data-bind-action="' + action + '">' + formatCode(code) + '</button></div>';
+        }).join('');
+    }
+    function processRebindKey(code) {
+        if (!game.awaitingBindAction) return false;
+        if (code === 'Escape') {
+            finishRebind(true);
+            return true;
+        }
+        const conflictAction = Object.keys(game.save.keybinds).find((a) => a !== game.awaitingBindAction && game.save.keybinds[a] === code);
+        if (conflictAction) {
+            ui.rebindCaptureText.textContent = 'Conflict with "' + KEYBIND_LABELS[conflictAction] + '". Choose another key.';
+            showMessage('Key conflict: ' + KEYBIND_LABELS[conflictAction], '#ff477f');
+            return true;
+        }
+        game.save.keybinds[game.awaitingBindAction] = code;
+        const reboundAction = game.awaitingBindAction;
+        renderKeybindSettings();
+        saveProgress(game);
+        finishRebind(false);
+        showMessage('Key bound: ' + KEYBIND_LABELS[reboundAction] + ' -> ' + formatCode(code), '#7bff6a');
+        return true;
+    }
+    function resetKeybinds() {
+        game.save.keybinds = deepClone(DEFAULT_KEYBINDS);
+        renderKeybindSettings();
+        saveProgress(game);
+        showMessage('Keybinds reset', '#ffb15a');
+    }
+    function resetProgress() {
+        const defaults = getDefaultSave();
+        game.save = mergeSave(defaults, defaults);
+        localStorage.setItem(SAVE_KEY, JSON.stringify(game.save));
+        applySaveToUI(game);
+        renderAchievements();
+        renderWeaponShop(game);
+        renderMetaShop(game);
+        renderKeybindSettings();
+        showMessage('Progress reset to defaults', '#ffb15a');
+    }
+    function handleActionPress(code) {
+        if (codeMatchesAction(code, 'ability_dash')) activateAbility('dash');
+        if (codeMatchesAction(code, 'ability_shield')) activateAbility('shield');
+        if (codeMatchesAction(code, 'ability_emp')) activateAbility('emp');
+        if (codeMatchesAction(code, 'weapon_1')) tryEquipBySlot(1);
+        if (codeMatchesAction(code, 'weapon_2')) tryEquipBySlot(2);
+        if (codeMatchesAction(code, 'weapon_3')) tryEquipBySlot(3);
+        if (codeMatchesAction(code, 'open_shop')) {
+            if (game.pauseReasons.wave) showWeaponShop(ui.weaponShopPanel.classList.contains('hidden'));
+            else showMessage('Shop can be opened during wave pause.', '#ffb15a');
+        }
+        if (codeMatchesAction(code, 'confirm_wave')) {
+            if (game.pauseReasons.wave) confirmNextWave();
+            else if (game.pauseReasons.dialog) nextDialog();
+        }
+        if (codeMatchesAction(code, 'pause_menu')) {
+            if (game.awaitingBindAction) finishRebind(true);
+            else if (game.pauseReasons.dialog) hideDialog();
+            else if (game.pauseReasons.wave) {
+                ui.weaponShopPanel.classList.add('hidden');
+                ui.metaShopPanel.classList.add('hidden');
+            }
+        }
+        if ((code === 'Enter' || code === 'Space') && game.pauseReasons.dialog) nextDialog();
+    }
+    function bindEvents() {
+        window.addEventListener('resize', resizeCanvas);
+        ui.canvas.addEventListener('mousemove', (ev) => {
+            const p = toCanvasCoords(ev);
+            game.mouse.x = p.x;
+            game.mouse.y = p.y;
+        });
+        ui.canvas.addEventListener('mousedown', () => {
+            game.mouse.down = true;
+            game.audio.ensureContext(game.save);
+        });
+        window.addEventListener('mouseup', () => { game.mouse.down = false; });
+        ui.canvas.addEventListener('mouseleave', () => { game.mouse.down = false; });
+        window.addEventListener('keydown', (ev) => {
+            if (processRebindKey(ev.code)) {
+                ev.preventDefault();
+                return;
+            }
+            game.keysDown.add(ev.code);
+            handleActionPress(ev.code);
+            if (ev.code.startsWith('Arrow') || ev.code === 'Space') ev.preventDefault();
+        });
+        window.addEventListener('keyup', (ev) => {
+            game.keysDown.delete(ev.code);
+        });
+        ui.startBtn.addEventListener('click', startGame);
+        ui.startFromMenuBtn.addEventListener('click', startGame);
+        ui.restartBtn.addEventListener('click', startGame);
+        ui.menuBtn.addEventListener('click', goToMenu);
+        ui.returnMenuBtn.addEventListener('click', goToMenu);
+        ui.confirmWaveBtn.addEventListener('click', confirmNextWave);
+        ui.openWeaponShopBtn.addEventListener('click', () => showWeaponShop(true));
+        ui.openMetaShopBtn.addEventListener('click', () => showMetaShop(true));
+        ui.openAchievementsBtn.addEventListener('click', () => {
+            renderAchievements();
+            showMessage('Achievements are displayed in the right panel.', '#2ef3ff');
+        });
+        ui.resetProgressBtn.addEventListener('click', () => {
+            if (window.confirm('Reset all progress, unlocks and settings?')) resetProgress();
+        });
+        ui.modeSelect.addEventListener('change', () => {
+            setMode(ui.modeSelect.value);
+            updateHUD();
+        });
+        ui.muteToggleBtn.addEventListener('click', () => {
+            game.save.audio.muted = !game.save.audio.muted;
+            ui.muteToggleBtn.textContent = game.save.audio.muted ? 'ON' : 'OFF';
+            game.audio.ensureContext(game.save);
+            game.audio.applyVolumes(game.save);
+            saveProgress(game);
+        });
+        ui.masterVolume.addEventListener('input', () => {
+            game.save.audio.master = Number(ui.masterVolume.value);
+            game.audio.ensureContext(game.save);
+            game.audio.applyVolumes(game.save);
+            saveProgress(game);
+        });
+        ui.musicVolume.addEventListener('input', () => {
+            game.save.audio.music = Number(ui.musicVolume.value);
+            game.audio.ensureContext(game.save);
+            game.audio.applyVolumes(game.save);
+            saveProgress(game);
+        });
+        ui.sfxVolume.addEventListener('input', () => {
+            game.save.audio.sfx = Number(ui.sfxVolume.value);
+            game.audio.ensureContext(game.save);
+            game.audio.applyVolumes(game.save);
+            saveProgress(game);
+        });
+        ui.resetKeybindsBtn.addEventListener('click', resetKeybinds);
+        ui.bindList.addEventListener('click', (ev) => {
+            const btn = ev.target.closest('button[data-bind-action]');
+            if (!btn) return;
+            startRebind(btn.dataset.bindAction);
+        });
+        ui.weaponShopPanel.addEventListener('click', (ev) => {
+            const btn = ev.target.closest('button');
+            if (!btn) return;
+            if (btn.dataset.unlockWeapon) unlockWeapon(btn.dataset.unlockWeapon);
+            if (btn.dataset.equipWeapon) equipWeapon(btn.dataset.equipWeapon);
+            if (btn.dataset.runUpgrade) buyRunUpgrade(btn.dataset.runUpgrade);
+            if (btn.dataset.closeShop) ui.weaponShopPanel.classList.add('hidden');
+        });
+        ui.metaShopPanel.addEventListener('click', (ev) => {
+            const btn = ev.target.closest('button');
+            if (!btn) return;
+            if (btn.dataset.unlockAbility) unlockAbility(btn.dataset.unlockAbility);
+            if (btn.dataset.closeShop) ui.metaShopPanel.classList.add('hidden');
+        });
+    }
+    function gameLoop(nowMs) {
+        const dt = Math.min(0.033, Math.max(0.001, (nowMs - game.lastTime) / 1000));
+        game.lastTime = nowMs;
+        updateArcadeDeck();
+        updateMessage(dt);
+        if (game.state === 'playing') {
+            if (!game.pauseReasons.dialog && !game.pauseReasons.wave) {
+                game.gameTime += dt;
+                updateWaveFlow(dt, nowMs);
+                updatePlayer(dt);
+                updateBullets(dt);
+                updateEnemyProjectiles(dt);
+                updateEnemies(dt);
+                updateResources(dt);
+                updateParticles(dt);
+                updateQuests();
+                updateAchievements();
+                game.autosaveTick = (game.autosaveTick || 0) + dt;
+                if (game.autosaveTick > 2.5) {
+                    game.autosaveTick = 0;
+                    saveProgress(game);
+                }
+            }
+            if (game.state === 'playing' && game.enemies.some((e) => e.typeId === 'boss')) game.audio.setMusicState('boss');
+            else if (game.state === 'playing' && !game.pauseReasons.wave) game.audio.setMusicState('wave');
+            drawScene(dt);
+            renderEdgeWarnings(nowMs);
+            updateHUD();
+        } else {
+            drawScene(dt);
+            warningCtx.clearRect(0, 0, game.width, game.height);
+        }
+        requestAnimationFrame(gameLoop);
+    }
+    function init() {
+        bindEvents();
+        resizeCanvas();
+        setMode(ui.modeSelect.value);
+        applySaveToUI(game);
+        ensureAchievementState();
+        renderAchievements();
+        renderQuests();
+        renderWeaponShop(game);
+        renderMetaShop(game);
+        renderKeybindSettings();
+        resetRunState();
+        applyWaveModifier(1);
+        goToMenu();
+        requestAnimationFrame(gameLoop);
+    }
+    window.scheduleEnemySpawn = scheduleEnemySpawn;
+    window.spawnEnemyFromSchedule = spawnEnemyFromSchedule;
+    window.renderEdgeWarnings = renderEdgeWarnings;
+    window.fireWeapon = fireWeapon;
+    window.activateAbility = activateAbility;
+    window.applyWaveModifier = applyWaveModifier;
+    window.spawnBossForWave = spawnBossForWave;
+    window.saveProgress = saveProgress;
+    window.loadProgress = loadProgress;
+    window.resetProgress = resetProgress;
+    window.getDailySeed = getDailySeed;
+    window.confirmNextWave = confirmNextWave;
+    init();
+})();
+</script>
+</body>
+</html>
