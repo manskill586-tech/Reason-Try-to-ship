@@ -1,10 +1,10 @@
-﻿
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Reason: Mega Expansion</title>
+<title>Reason: Try to ship</title>
 <style>
 :root {
     --bg: #050816;
@@ -21,6 +21,7 @@
 body {
     margin: 0;
     font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+    /* maybe too dark on laptop screen, проверю потом */
     background:
         radial-gradient(circle at 20% 15%, rgba(46, 243, 255, 0.14), transparent 35%),
         radial-gradient(circle at 80% 85%, rgba(255, 123, 46, 0.14), transparent 35%),
@@ -63,7 +64,7 @@ body {
     font-size: 12px;
 }
 .btn { cursor: pointer; transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s; }
-.btn:hover { transform: translateY(-1px); border-color: var(--accent); box-shadow: 0 0 10px rgba(46, 243, 255, 0.3); }
+.btn:hover { transform: translateY(-1px); border-color: #2ef3ff; box-shadow: 0 0 10px rgba(46, 243, 255, 0.3); }
 .btn.danger { border-color: #8b2f5c; background: #331329; }
 .btn.accent { border-color: #2b7e88; background: #11343a; }
 .meta-pill { padding: 6px 10px; background: #1a274f; border: 1px solid #385db7; font-size: 12px; white-space: nowrap; }
@@ -75,7 +76,7 @@ body {
     box-shadow: inset 0 0 0 1px rgba(46, 243, 255, 0.14);
     padding: 10px;
 }
-.panel h3 { margin: 0 0 8px; font-size: 13px; letter-spacing: 0.9px; color: var(--accent); text-transform: uppercase; }
+.panel h3 { margin: 0 0 8px; font-size: 13px; letter-spacing: 0.9px; color: #2ef3ff; text-transform: uppercase; }
 #playAreaWrap { position: relative; min-height: 0; background: #05081b; border: 2px solid #2e529e; overflow: hidden; }
 #gameCanvas, #edgeWarningLayer { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 #edgeWarningLayer { pointer-events: none; z-index: 6; }
@@ -86,7 +87,7 @@ body {
     transform: translateX(-50%);
     z-index: 14;
     background: rgba(8, 13, 35, 0.95);
-    border: 2px solid var(--accent);
+    border: 2px solid #2ef3ff; /* todo */
     color: #fff;
     padding: 9px 14px;
     font-size: 13px;
@@ -140,10 +141,49 @@ body {
     animation: shopSlideIn 0.22s ease-out forwards;
 }
 .shop-section { border: 1px solid #2f4f98; padding: 8px; margin-bottom: 8px; background: rgba(10, 18, 44, 0.85); }
-.shop-title { font-size: 12px; color: var(--accent); margin-bottom: 4px; }
+.shop-title { font-size: 12px; color: var(--accent); margin-bottom: 4px; } /* todo */
 .shop-row { display: flex; justify-content: space-between; gap: 8px; align-items: center; margin: 6px 0; font-size: 12px; }
-#dialogBox { position: absolute; left: 10px; right: 10px; bottom: 10px; z-index: 21; background: rgba(8, 12, 34, 0.96); border: 2px solid var(--accent); padding: 10px; }
-#dialogName { font-weight: 700; color: var(--accent); margin-bottom: 4px; }
+#dialogBox { position: absolute; left: 10px; right: 10px; bottom: 10px; z-index: 21; background: rgba(8, 12, 34, 0.96); border: 2px solid var(--accent); padding: 10px; overflow: visible; }
+#dialogPortraitWrap {
+    position: absolute;
+    left: 12px;
+    bottom: calc(100% + 8px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+}
+#dialogPortrait {
+    width: 114px;
+    height: 114px;
+    border-radius: 14px;
+    border: 2px solid #3f63c2;
+    background: #0d1537;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
+}
+#dialogAvatarTag {
+    margin-top: 4px;
+    font-size: 11px;
+    background: rgba(11, 21, 52, 0.94);
+    border: 1px solid #3f63c2;
+    padding: 2px 8px;
+    color: #d6e7ff;
+}
+#dialogHeader { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+#dialogTalkIcon {
+    min-width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    border: 1px solid var(--accent);
+    color: #d8e9ff;
+    background: linear-gradient(180deg, #1e2f6d 0%, #13224f 100%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    line-height: 1;
+}
+#dialogName { font-weight: 700; color: var(--accent); margin-bottom: 0; }
 #dialogText { font-size: 14px; margin-bottom: 8px; }
 #dialogChoices { display: flex; flex-wrap: wrap; gap: 8px; }
 .dialog-choice { border: 1px solid #3760be; background: #12204f; color: #fff; padding: 8px 10px; cursor: pointer; }
@@ -199,7 +239,7 @@ body {
     #cabinetTop { flex-wrap: wrap; height: auto; }
     #cabinetMain { grid-template-columns: 1fr; }
     #cabinetSideLeft, #cabinetSideRight { flex-direction: column; }
-    #playAreaWrap { min-height: 430px; }
+    #playAreaWrap { min-height: 430px; } /* maybe too tall on tiny phones */
     #arcadeDeck { grid-template-columns: 1fr; }
 }
 </style>
@@ -266,7 +306,7 @@ body {
             <div id="message"></div>
             <div id="mainMenu">
                 <div class="menu-title">Reason: Mega Expansion</div>
-                <div class="menu-sub">Start a run, clear every enemy in each wave, read absurd space chatter, buy upgrades, and try to look cool while panicking.</div>
+                <div class="menu-sub">Help Bob ship the game "Ship project", survive every wave, and manage a very unstable cast of cosmic coworkers.</div>
                 <button class="btn accent" id="startFromMenuBtn">Start Run</button>
                 <div class="small-note">WASD + Mouse to move/aim, Z/X/C abilities, 1/2/3 weapon slots</div>
             </div>
@@ -291,7 +331,14 @@ body {
             <div id="weaponShopPanel" class="shop-panel hidden"></div>
             <div id="metaShopPanel" class="shop-panel hidden"></div>
             <div id="dialogBox" class="hidden">
-                <div id="dialogName"></div>
+                <div id="dialogPortraitWrap">
+                    <canvas id="dialogPortrait" width="128" height="128"></canvas>
+                    <div id="dialogAvatarTag">System</div>
+                </div>
+                <div id="dialogHeader">
+                    <div id="dialogTalkIcon">...</div>
+                    <div id="dialogName"></div>
+                </div>
                 <div id="dialogText"></div>
                 <div id="dialogChoices"></div>
                 <div class="small-note" style="margin-top:6px;">Press Enter / Space to continue</div>
@@ -370,6 +417,7 @@ body {
         starter_pistol: { id: 'starter_pistol', name: 'Starter Pistol', slot: 1, unlockCost: 0, fireRate: 4.8, speed: 520, spread: 0, pellets: 1, damage: 16, life: 1.25, color: '#2ef3ff' },
         scatter_shotgun: { id: 'scatter_shotgun', name: 'Scatter Shotgun', slot: 2, unlockCost: 180, fireRate: 1.8, speed: 450, spread: 0.22, pellets: 6, damage: 10, life: 0.7, color: '#ffb15a' },
         burst_laser: { id: 'burst_laser', name: 'Burst Laser', slot: 3, unlockCost: 320, fireRate: 3.1, speed: 700, spread: 0.04, pellets: 3, burst: true, burstDelay: 0.08, damage: 11, life: 0.95, color: '#7bff6a' }
+        // { id: 'banana_cannon', unlockCost: 9999 } // joke weapon, maybe april build
     };
     const ABILITY_CATALOG = {
         dash: { id: 'dash', name: 'Dash', unlockCost: 120, cooldown: 6, defaultUnlocked: true },
@@ -393,8 +441,9 @@ body {
         ability_dash: 'KeyZ', ability_shield: 'KeyX', ability_emp: 'KeyC',
         weapon_1: 'Digit1', weapon_2: 'Digit2', weapon_3: 'Digit3',
         confirm_wave: 'Enter', open_shop: 'KeyB', pause_menu: 'Escape'
+        // pause_alt: 'Backspace'
     };
-    const KEYBIND_LABELS = {
+    var KEYBIND_LABELS = {
         move_up: 'Move Up', move_down: 'Move Down', move_left: 'Move Left', move_right: 'Move Right',
         ability_dash: 'Ability Dash (Z)', ability_shield: 'Ability Shield (X)', ability_emp: 'Ability EMP (C)',
         weapon_1: 'Weapon Slot 1', weapon_2: 'Weapon Slot 2', weapon_3: 'Weapon Slot 3',
@@ -402,22 +451,48 @@ body {
     };
     const DIALOGS = {
         intro: [
-            { char: 'Pilot', text: 'Hi. The ship says it runs on neon, snacks, and bad ideas. That feels correct.' },
-            { char: 'Operator', text: 'Between waves, buy upgrades. We survive with confidence and questionable math.' },
-            { char: 'Operator', text: 'Tiny starter bonus, because we are brave beginners:', choices: [{ label: 'Damage +15% this run', effect: { damageMult: 1.15 } }, { label: 'Move speed +20% this run', effect: { speedMult: 1.2 } }] }
+            { char: 'Bob', text: 'Hey. I am Bob, creator of this mess. Our goal is simple: finally ship the game "Ship project".' },
+            { char: 'Captain Oops', text: 'I already pressed the release button once. It released the coffee machine. Sorry.' },
+            { char: 'Intern Nika', text: 'I made a bug tracker. It grew legs and now tracks me instead.' },
+            { char: 'Microwave Oracle', text: 'BEEP. PROPHECY: only chaos can ship this game.' },
+            { char: 'Cat', text: 'Meow' },
+            { char: 'Bob', text: 'Every wave is one more step to release. Buy upgrades, stay alive, and pretend this is all planned.' },
+            { char: 'Bob', text: 'Pick your starter bonus for this run:', choices: [{ label: 'Damage +15% this run', effect: { damageMult: 1.15 } }, { label: 'Move speed +20% this run', effect: { speedMult: 1.2 } }] }
         ],
-        boss_warning: [{ char: 'Operator', text: 'Huge angry space appliance detected. Please dodge politely.' }],
-        final_story: [{ char: 'Operator', text: 'Plot is almost solved. Pick one last weird upgrade:', choices: [{ label: 'Shield starts full', effect: { bonusShield: 40 } }, { label: 'Resource gain +30%', effect: { resourceMult: 1.3 } }] }]
+        boss_warning: [
+            { char: 'Bob', text: 'Big boss detected. If we win this, Ship project gets one step closer to release.' },
+            { char: 'Bug Baron', text: 'I am not a bug, I am an undocumented surprise.' },
+            { char: 'Cat', text: 'Meow' }
+        ],
+        final_story: [
+            { char: 'Bob', text: 'Okay, this is the final release push for Ship project. One last choice:' },
+            { char: 'Toaster Knight', text: 'My sword is made of patch notes. It is heavy but compliant.' },
+            { char: 'Bob', text: 'Pick a final boost:', choices: [{ label: 'Shield starts full', effect: { bonusShield: 40 } }, { label: 'Resource gain +30%', effect: { resourceMult: 1.3 } }] },
+            { char: 'Cat', text: 'Meow' }
+        ]
+    };
+    const DIALOG_CAST = {
+        System: { accent: '#8fb3ff', colorA: '#20306a', colorB: '#111b45', type: 'orb' },
+        Bob: { accent: '#6ed8ff', colorA: '#2a8fd1', colorB: '#154578', type: 'human' },
+        Cat: { accent: '#ffd17a', colorA: '#8f7a4a', colorB: '#5c4d2d', type: 'cat' },
+        'Captain Oops': { accent: '#ffb06f', colorA: '#ac5f31', colorB: '#5f2c14', type: 'human' },
+        'Intern Nika': { accent: '#9cf8ff', colorA: '#3b9ca8', colorB: '#1d4f57', type: 'human' },
+        'Microwave Oracle': { accent: '#dba8ff', colorA: '#7f4cb0', colorB: '#3c1f58', type: 'visor' },
+        'Bug Baron': { accent: '#ff7ea8', colorA: '#a92d58', colorB: '#591931', type: 'ghost' },
+        'Toaster Knight': { accent: '#f5e18c', colorA: '#8c7537', colorB: '#4f3f1e', type: 'toaster' },
+        'Cosmic Accountant': { accent: '#99ffac', colorA: '#3d8f56', colorB: '#21502f', type: 'visor' },
+        'Printer Dragon': { accent: '#ff8f8f', colorA: '#a83e3e', colorB: '#5a2020', type: 'ghost' },
+        'Patch Note Spirit': { accent: '#8ef7df', colorA: '#2f9a80', colorB: '#175143', type: 'orb' }
     };
     const WAVE_STORY_POOL = [
-        'A moon just applauded your driving. It had tiny gloves.',
-        'Our navigation map now includes a bakery and two black holes.',
-        'The ship AI says: \"Great work, captain potato.\" I think that is praise.',
-        'A comet asked for directions, then exploded from embarrassment.',
-        'Space pirates sent flowers, then forgot why they were mad.',
-        'The engine is humming a lullaby in binary. Very soothing, very cursed.',
-        'A cosmic duck flew by and judged our aim. Harsh but fair.',
-        'The vending machine predicts destiny and mostly offers juice.'
+        { char: 'Captain Oops', text: 'Good wave. I only exploded two prototypes this time.' },
+        { char: 'Intern Nika', text: 'I refactored one line and unlocked four dimensions.' },
+        { char: 'Cosmic Accountant', text: 'Budget update: we spent all money on particles. Worth it.' },
+        { char: 'Microwave Oracle', text: 'BEEP. NEW VISION: release date approaches on flaming roller skates.' },
+        { char: 'Printer Dragon', text: 'I printed patch notes so long they formed a mountain.' },
+        { char: 'Bug Baron', text: 'I retired three bugs. Two came back with hats.' },
+        { char: 'Toaster Knight', text: 'I defended the build server with buttered steel.' },
+        { char: 'Patch Note Spirit', text: 'The changelog is now sentient and asks for royalties.' }
     ];
     const STORY_QUESTS = [
         { id: 1, title: 'Collect 25 resources', type: 'resources', target: 25, current: 0, completed: false },
@@ -426,20 +501,25 @@ body {
         { id: 4, title: 'Defeat 2 bosses', type: 'boss_kills', target: 2, current: 0, completed: false }
     ];
     const ACHIEVEMENTS = [
-        { id: 'first_kill', name: 'First Spark', desc: 'Destroy 1 enemy', reward: 20, test: (g) => g.kills >= 1 },
+        { id: 'first_kill', name: 'First Spark', desc: 'Destroy 1 enemy', reward: 20, test: function (g) { return g.kills >= 1; } },
+        // todo: maybe split into "easy/normal/hard" achievements later
         { id: 'kill_100', name: 'Hunter', desc: 'Destroy 100 enemies total', reward: 80, test: (g) => g.totalRunStats.kills >= 100 },
         { id: 'resource_150', name: 'Miner', desc: 'Collect 150 resources in one run', reward: 70, test: (g) => g.resources >= 150 },
-        { id: 'wave_5', name: 'Wave Rider', desc: 'Reach wave 5', reward: 60, test: (g) => g.enemyWave >= 5 },
+        { id: 'wave_5', name: 'Wave Rider', desc: 'Reach wave 5', reward: 60, test: function (g) { return g.enemyWave >= 5; } },
         { id: 'wave_10', name: 'Neon Survivor', desc: 'Reach wave 10', reward: 120, test: (g) => g.enemyWave >= 10 },
         { id: 'boss_1', name: 'Boss Breaker', desc: 'Defeat one boss', reward: 100, test: (g) => g.bossKills >= 1 },
         { id: 'boss_5', name: 'Titan Hunter', desc: 'Defeat five bosses total', reward: 220, test: (g) => g.totalRunStats.bossKills >= 5 },
         { id: 'unlock_shotgun', name: 'Wide Spread', desc: 'Unlock Scatter Shotgun', reward: 30, test: (g) => g.save.unlockedWeapons.includes('scatter_shotgun') },
         { id: 'unlock_laser', name: 'Pulse Array', desc: 'Unlock Burst Laser', reward: 50, test: (g) => g.save.unlockedWeapons.includes('burst_laser') },
         { id: 'all_weapons', name: 'Arsenal', desc: 'Unlock all weapons', reward: 120, test: (g) => ['starter_pistol', 'scatter_shotgun', 'burst_laser'].every((w) => g.save.unlockedWeapons.includes(w)) },
-        { id: 'all_abilities', name: 'Overclocked', desc: 'Unlock all abilities', reward: 130, test: (g) => ['dash', 'shield', 'emp'].every((a) => g.save.unlockedAbilities.includes(a)) },
+        { id: 'all_abilities', name: 'Overclocked', desc: 'Unlock all abilities', reward: 130, test: function (g) { return ['dash', 'shield', 'emp'].every((a) => g.save.unlockedAbilities.includes(a)); } },
         { id: 'daily_finish', name: 'Daily Clear', desc: 'Complete a Daily run (wave 6+)', reward: 90, test: (g) => g.mode === 'daily' && g.enemyWave >= 6 }
     ];
-    function deepClone(obj) { return JSON.parse(JSON.stringify(obj)); }
+    function deepClone(obj) {
+        // старый клонер, менять страшно
+        if (obj === undefined) return undefined;
+        return JSON.parse(JSON.stringify(obj));
+    }
     function getDefaultSave() {
         return {
             version: 2,
@@ -455,11 +535,12 @@ body {
         };
     }
     function mergeSave(base, incoming) {
-        const out = deepClone(base);
+        var out = deepClone(base);
         if (!incoming || typeof incoming !== 'object') return out;
+        // todo migrate old v1 fields? maybe later maybe never
         out.version = 2;
         out.metaCredits = Number(incoming.metaCredits) || 0;
-        out.highScores = Object.assign(out.highScores, incoming.highScores || {});
+        out.highScores = Object.assign(out.highScores, incoming.highScores || {}); // тут было криво один раз
         out.unlockedWeapons = Array.isArray(incoming.unlockedWeapons) ? incoming.unlockedWeapons.slice() : out.unlockedWeapons;
         out.unlockedAbilities = Array.isArray(incoming.unlockedAbilities) ? incoming.unlockedAbilities.slice() : out.unlockedAbilities;
         out.audio = Object.assign(out.audio, incoming.audio || {});
@@ -479,11 +560,13 @@ body {
                 localStorage.setItem(SAVE_KEY, JSON.stringify(defaults));
                 return defaults;
             }
-            const parsed = JSON.parse(raw);
+            let parsed = null;
+            parsed = JSON.parse(raw);
             const merged = mergeSave(defaults, parsed);
             localStorage.setItem(SAVE_KEY, JSON.stringify(merged));
             return merged;
         } catch (err) {
+            // падало у знакомого из-за ручной правки localStorage
             console.error('Failed to load save:', err);
             localStorage.setItem(SAVE_KEY, JSON.stringify(defaults));
             return defaults;
@@ -515,7 +598,7 @@ body {
             return ((x ^ x >>> 14) >>> 0) / 4294967296;
         };
     }
-    function pickRandom(game, arr) { return arr[Math.floor(game.rand() * arr.length)]; }
+    const pickRandom = (game, arr) => { return arr[Math.floor(game.rand() * arr.length)]; };
     function createAudioSystem() {
         const system = {
             ctx: null, master: null, musicGain: null, sfxGain: null, menuOsc: null, waveOsc: null, bossOsc: null,
@@ -582,8 +665,11 @@ body {
         };
         return system;
     }
+    // old style from start of project, оставил как есть потому что хз
+    var oldCanvasRef = document.querySelector('#gameCanvas');
+    var oldWarnRef = document.querySelector('#edgeWarningLayer');
     const ui = {
-        canvas: document.getElementById('gameCanvas'), warningCanvas: document.getElementById('edgeWarningLayer'), message: document.getElementById('message'),
+        canvas: oldCanvasRef || document.getElementById('gameCanvas'), warningCanvas: oldWarnRef || document.getElementById('edgeWarningLayer'), message: document.getElementById('message'),
         modeSelect: document.getElementById('modeSelect'), startBtn: document.getElementById('startBtn'), menuBtn: document.getElementById('menuBtn'), resetProgressBtn: document.getElementById('resetProgressBtn'),
         startFromMenuBtn: document.getElementById('startFromMenuBtn'), restartBtn: document.getElementById('restartBtn'), returnMenuBtn: document.getElementById('returnMenuBtn'),
         mainMenu: document.getElementById('mainMenu'), gameOver: document.getElementById('gameOverScreen'), gameOverStats: document.getElementById('gameOverStats'),
@@ -591,6 +677,7 @@ body {
         openWeaponShopBtn: document.getElementById('openWeaponShopBtn'), openMetaShopBtn: document.getElementById('openMetaShopBtn'), openAchievementsBtn: document.getElementById('openAchievementsBtn'),
         weaponShopPanel: document.getElementById('weaponShopPanel'), metaShopPanel: document.getElementById('metaShopPanel'),
         dialogBox: document.getElementById('dialogBox'), dialogName: document.getElementById('dialogName'), dialogText: document.getElementById('dialogText'), dialogChoices: document.getElementById('dialogChoices'),
+        dialogPortrait: document.getElementById('dialogPortrait'), dialogAvatarTag: document.getElementById('dialogAvatarTag'), dialogTalkIcon: document.getElementById('dialogTalkIcon'),
         rebindCapture: document.getElementById('rebindCapture'), rebindCaptureText: document.getElementById('rebindCaptureText'), bindList: document.getElementById('bindList'), resetKeybindsBtn: document.getElementById('resetKeybindsBtn'),
         muteToggleBtn: document.getElementById('muteToggleBtn'), masterVolume: document.getElementById('masterVolume'), musicVolume: document.getElementById('musicVolume'), sfxVolume: document.getElementById('sfxVolume'),
         questList: document.getElementById('questList'), achievementList: document.getElementById('achievementList'),
@@ -603,6 +690,7 @@ body {
     };
     const ctx = ui.canvas.getContext('2d');
     const warningCtx = ui.warningCanvas.getContext('2d');
+    const dialogPortraitCtx = ui.dialogPortrait ? ui.dialogPortrait.getContext('2d') : null;
     const game = {
         state: 'menu', mode: 'story', modeConfig: deepClone(GAME_MODES.story), save: loadProgress(), rand: Math.random, rngSeed: 0,
         width: ui.canvas.width, height: ui.canvas.height,
@@ -626,12 +714,13 @@ body {
         ui.message.style.color = color || '#ffffff';
         game.messageTimer = 2.8;
     }
-    function updateMessage(dt) {
-        if (game.messageTimer > 0) {
-            game.messageTimer -= dt;
-            if (game.messageTimer <= 0) ui.message.style.display = 'none';
-        }
-    }
+    const updateMessage = (dt) => {
+      var d = dt || 0;
+      if (game.messageTimer > 0) {
+          game.messageTimer -= d;
+          if (game.messageTimer <= 0) ui.message.style.display = 'none';
+      }
+    };
     function applySaveToUI(g) {
         ui.metaCreditsCurrent.textContent = Math.floor(g.save.metaCredits);
         ui.scoreStory.textContent = Math.floor(g.save.highScores.story || 0);
@@ -646,23 +735,29 @@ body {
     }
     function setupStars() {
         game.starsBg = [];
-        for (let i = 0; i < 110; i++) {
+        for (var i = 0; i < 110; i++) {
             game.starsBg.push({ x: Math.random() * game.width, y: Math.random() * game.height, s: Math.random() * 2 + 0.3, v: Math.random() * 24 + 8 });
         }
+        // todo: maybe parallax layer? потом
     }
     function setMode(mode) {
-        game.mode = mode;
-        game.modeConfig = deepClone(GAME_MODES[mode] || GAME_MODES.story);
+        var m = mode || 'story';
+        if (!GAME_MODES[m]) m = 'story';
+        game.mode = m;
+        game.modeConfig = deepClone(GAME_MODES[m] || GAME_MODES.story);
         game.waveDuration = game.modeConfig.waveDuration;
         ui.currentMode.textContent = game.mode;
     }
     function getWaveEnemyCountNoobStyle(waveNum) {
         // simple beginner math: each wave gets more enemies
-        let c = 7 + waveNum * 3;
+        var c = 7 + waveNum * 3;
         if (game.mode === 'endless') c += 2;
         if (game.mode === 'daily') c += 1;
         if (game.mode === 'bossrush') c = 5 + waveNum * 2;
-        return Math.max(6, Math.min(170, Math.floor(c)));
+        c = Math.floor(c);
+        if (c < 6) c = 6;
+        if (c > 170) c = 170;
+        return c;
     }
     function setupWaveByNoobMath(waveNum) {
         game.waveSpawnTarget = getWaveEnemyCountNoobStyle(waveNum);
@@ -671,30 +766,57 @@ body {
         game.spawnAccumulator = 0;
     }
     function getWaveLeftCountSimple() {
-        const notQueuedYet = Math.max(0, game.waveSpawnTarget - game.waveSpawned);
-        return notQueuedYet + game.spawnTickets.length + game.enemies.length;
+        let x1 = 0;
+        let x2 = 0;
+        let x3 = 0;
+        const maybeDiff = numOr(game.waveSpawnTarget, 0) - numOr(game.waveSpawned, 0);
+        if (maybeDiff > 0) {
+            x1 = maybeDiff;
+        } else {
+            x1 = 0;
+        }
+        if (game.spawnTickets) {
+            x2 = lenMaybe(game.spawnTickets);
+        }
+        if (game.enemies) {
+            x3 = lenMaybe(game.enemies);
+            if (x3 < 0) x3 = 0;
+        }
+        let out = 0;
+        const tmpArr = [x1, x2, x3];
+        for (let i = 0; i < tmpArr.length; i++) {
+            const n = numOr(tmpArr[i], 0);
+            out += n;
+        }
+        return out;
     }
     function makeNiceAbsurdWaveDialog(waveNum) {
-        const idx = Math.abs((waveNum - 1) % WAVE_STORY_POOL.length);
-        const lines = [
-            { char: 'Pilot', text: 'Wave ' + waveNum + ' cleared. Nobody panic, we are somehow professionals now.' },
-            { char: 'Operator', text: WAVE_STORY_POOL[idx] }
-        ];
-        if (waveNum % 3 === 0) {
-            lines.push({
-                char: 'Intern',
-                text: 'Intern bonus menu is open. Please choose one dramatic nonsense buff:',
-                choices: [
-                    { label: 'Tiny damage boost (+8%)', effect: { damageMult: 1.08 } },
-                    { label: 'Tiny speed boost (+10%)', effect: { speedMult: 1.1 } }
-                ]
-            });
+        let idx = 0;
+        const len = Math.max(1, lenMaybe(WAVE_STORY_POOL));
+        const w = numOr(waveNum, 1);
+        idx = Math.abs((w - 1) % len);
+        const cameo = WAVE_STORY_POOL[idx] || { char: 'System', text: '...' };
+        const lines = [];
+        lines.push({ char: 'Bob', text: 'Wave ' + w + ' cleared. Ship project survived another weird sprint.' });
+        lines.push({ char: cameo.char, text: cameo.text });
+        const evenCheck = ((w % 2) === 0) ? 1 : 0;
+        if (evenCheck === 1) {
+            lines.push({ char: 'Cat', text: 'Meow' });
+        } else {
+            if (w % 3 === 1) {
+                // newbie style: random extra chatter
+                lines.push({ char: 'Bob', text: 'We keep going. Nobody open production database please.' });
+            }
         }
-        return lines;
+        if (w % 5 === 0) {
+            lines.push({ char: 'Microwave Oracle', text: 'BEEP. MILESTONE REACHED: the code now tastes like victory.' });
+        }
+        // todo maybe add random rare npc lines (1%?) but now enough
+        return lines.slice();
     }
     function setupRandomForMode() {
         if (game.mode === 'daily') {
-            const localDate = new Date();
+            const localDate = new Date(); // local timezone date, как договаривались
             const key = localDate.getFullYear() + '-' + String(localDate.getMonth() + 1).padStart(2, '0') + '-' + String(localDate.getDate()).padStart(2, '0');
             const seed = getDailySeed(key);
             game.rngSeed = seed;
@@ -753,6 +875,8 @@ body {
         game.nextTicketId = 1;
         game.nextEntityId = 1;
         game.warningPulseTimer = 0;
+        // старый мусор, оставил чтоб не забыть идею:
+        // game.player.drag = 0.92;
         setupWaveByNoobMath(1);
     }
     function startGame() {
@@ -770,7 +894,9 @@ body {
         renderWeaponShop(game);
         renderMetaShop(game);
         if (game.modeConfig.storyEnabled) showDialog(DIALOGS.intro);
-        else showMessage('Run started: ' + GAME_MODES[game.mode].label, '#2ef3ff');
+        else {
+            showMessage('Run started: ' + GAME_MODES[game.mode].label, '#2ef3ff');
+        }
         game.audio.ensureContext(game.save);
         game.audio.setMusicState('wave');
         saveProgress(game);
@@ -786,6 +912,8 @@ body {
         ui.weaponShopPanel.classList.add('hidden');
         ui.metaShopPanel.classList.add('hidden');
         game.audio.setMusicState('menu');
+        // хз надо ли это в меню, но иногда помогало от залипания
+        game.keysDown.clear();
         updateHUD();
     }
     function endRun() {
@@ -795,7 +923,7 @@ body {
         const runScore = Math.floor(game.score + game.kills * 6 + game.enemyWave * 24 + game.resources * 1.5);
         const metaReward = Math.max(20, Math.floor(runScore / 16));
         game.save.metaCredits += metaReward;
-        const oldScore = game.save.highScores[game.mode] || 0;
+        var oldScore = game.save.highScores[game.mode] || 0;
         if (runScore > oldScore) game.save.highScores[game.mode] = runScore;
         if (game.mode === 'daily') game.save.daily.bestScore = Math.max(game.save.daily.bestScore || 0, runScore);
         saveProgress(game);
@@ -805,18 +933,20 @@ body {
         ui.mainMenu.classList.add('hidden');
         game.audio.setMusicState('menu');
     }
-    function scheduleEnemySpawn(typeId, edge, position, etaMs, isElite, elitePrefix) {
-        const now = performance.now();
+    function throwMobFromEdgeLOL(typeId, edge, position, etaMs, isElite, elitePrefix) {
+        var now = performance.now();
         const ticket = { id: game.nextTicketId++, typeId: typeId, edge: edge, position: position, spawnAt: now + etaMs, isElite: !!isElite, elitePrefix: elitePrefix || null };
         game.spawnTickets.push(ticket);
         return ticket;
     }
+    const scheduleEnemySpawn = throwMobFromEdgeLOL; // имя оставил для совместимости c GUIDE/старым сейвом
+    const addSpawnWeird = (...args) => scheduleEnemySpawn(...args); // legacy alias, уже боюсь трогать
     function spawnEnemyFromSchedule(spawnTicket) {
         const type = ENEMY_TYPES[spawnTicket.typeId] || ENEMY_TYPES.grunt;
         let x = 0;
         let y = 0;
         const margin = type.size + 12;
-        if (spawnTicket.edge === 'top') { x = spawnTicket.position; y = -margin; }
+        if (spawnTicket.edge === 'top') { x = spawnTicket.position; y = -margin; } // todo maybe clamp
         else if (spawnTicket.edge === 'right') { x = game.width + margin; y = spawnTicket.position; }
         else if (spawnTicket.edge === 'bottom') { x = spawnTicket.position; y = game.height + margin; }
         else { x = -margin; y = spawnTicket.position; }
@@ -833,7 +963,7 @@ body {
             hp = type.hp * (6 + game.enemyWave * 0.75);
             speed = type.speed * 0.9;
         }
-        game.enemies.push({
+      game.enemies.push({
             id: game.nextEntityId++, typeId: type.id, x: x, y: y, hp: hp, maxHp: hp, speed: speed,
             size: type.size, reward: type.reward, contactDamage: type.contact, color: type.color,
             elitePrefix: eliteData ? eliteData.id : null, eliteData: eliteData,
@@ -841,6 +971,7 @@ body {
         });
     }
     function renderEdgeWarnings(nowMs) {
+        // maybe optimize later, сейчас так норм
         warningCtx.clearRect(0, 0, game.width, game.height);
         const alphaMul = game.waveEffects.warningAlpha;
         let highPriority = false;
@@ -875,7 +1006,7 @@ body {
         }
     }
     function getRandomEdgeAndPosition() {
-        const edge = pickRandom(game, ['top', 'right', 'bottom', 'left']);
+        var edge = pickRandom(game, ['top', 'right', 'bottom', 'left']);
         if (edge === 'top' || edge === 'bottom') return { edge: edge, pos: game.rand() * game.width };
         return { edge: edge, pos: game.rand() * game.height };
     }
@@ -891,8 +1022,8 @@ body {
         const eliteChance = Math.min(0.30, 0.10 + Math.max(0, game.enemyWave - 4) * 0.02);
         const isElite = game.enemyWave >= 4 && game.rand() < eliteChance;
         const elitePrefix = isElite ? pickRandom(game, Object.keys(ELITE_PREFIXES)) : null;
-        const eta = 550 + game.rand() * 1200;
-        scheduleEnemySpawn(typeId, ep.edge, ep.pos, eta, isElite, elitePrefix);
+        const eta = 550 + game.rand() * 1200; // было 900, вернул назад когда стало слишком резко
+        addSpawnWeird(typeId, ep.edge, ep.pos, eta, isElite, elitePrefix);
     }
     function applyWaveModifier(waveIndex) {
         game.waveEffects = { spawnRate: 1, enemyHp: 1, enemySpeed: 1, resourceBonus: 1, warningAlpha: 1 };
@@ -908,9 +1039,10 @@ body {
     }
     function spawnBossForWave(waveIndex) {
         const ep = getRandomEdgeAndPosition();
-        scheduleEnemySpawn('boss', ep.edge, ep.pos, 1400, false, null);
+        addSpawnWeird('boss', ep.edge, ep.pos, 1400, false, null);
         showMessage('Boss incoming!', '#ff477f');
         game.audio.bossIntro();
+        // TODO maybe unique boss lines by wave
         if (game.modeConfig.storyEnabled && waveIndex >= 3) setTimeout(function () { if (game.state === 'playing') showDialog(DIALOGS.boss_warning); }, 400);
     }
     function fireWeapon(weaponId, originX, originY, angle) {
@@ -919,6 +1051,7 @@ body {
         const now = performance.now() / 1000;
         const fireRate = weapon.fireRate + game.runWeaponLevels.fireRate * 0.45;
         if (now - game.lastShotAt < 1 / fireRate) return false;
+        // var dmg = weapon.damage * 1.5; // todo: проверить баланс
         const damageBoost = 1 + game.runWeaponLevels.damage * 0.14;
         const dmgMult = damageBoost * game.choiceBuff.damageMult;
         const speedBoost = 1 + game.runWeaponLevels.bulletSpeed * 0.12;
@@ -942,6 +1075,7 @@ body {
             if (s.delay <= 0) spawnShot(); else setTimeout(spawnShot, s.delay * 1000);
         });
         game.audio.shoot(weapon);
+        // TODO recoil maybe ?
         return true;
     }
     function activateAbility(abilityId) {
@@ -991,6 +1125,21 @@ body {
     function clamp(value, min, max) {
         return Math.max(min, Math.min(max, value));
     }
+    function yeaMaybe(v) {
+      // todo
+      if (v) return true;
+        return false; // yeah redundant but keep
+    }
+    function numOr(v, fallback) {
+        const n = Number(v);
+        if (Number.isFinite(n)) return n;
+        return fallback;
+    }
+    function lenMaybe(arrLike) {
+      if (!arrLike) return 0;
+        if (!('length' in arrLike)) return 0;
+      return numOr(arrLike.length, 0);
+    }
     function formatCode(code) {
         if (!code) return '-';
         if (code.startsWith('Key')) return code.slice(3);
@@ -1006,19 +1155,23 @@ body {
     function getActionCode(action) {
         return game.save.keybinds[action] || DEFAULT_KEYBINDS[action] || '';
     }
-    function getActionAliases(action) {
-        if (action === 'move_up') return ['ArrowUp'];
-        if (action === 'move_down') return ['ArrowDown'];
-        if (action === 'move_left') return ['ArrowLeft'];
-        if (action === 'move_right') return ['ArrowRight'];
-        if (action === 'confirm_wave') return ['Space'];
-        return [];
-    }
-    function codeMatchesAction(code, action) {
+    const getActionAliases = (action) => {
+       // костыль, переделать потом
+       var a = [];
+       if (action === 'move_up') a = ['ArrowUp'];
+       if (action === 'move_down') a = ['ArrowDown'];
+       if (action === 'move_left') a = ['ArrowLeft'];
+       if (action === 'move_right') a = ['ArrowRight'];
+       if (action === 'confirm_wave') a = ['Space'];
+       return a;
+    };
+    function keyIs(code, action) {
+        // хз почему но без двойной проверки иногда глючило у друга в firefox
         if (code === getActionCode(action)) return true;
         const aliases = getActionAliases(action);
         return aliases.includes(code);
     }
+    const checkKey = (code, a) => keyIs(code, a);
     function isActionPressed(action) {
         if (game.keysDown.has(getActionCode(action))) return true;
         const aliases = getActionAliases(action);
@@ -1160,6 +1313,146 @@ body {
             game.player.shield = Math.min(game.player.shieldMax, game.player.shield + effect.bonusShield);
         }
     }
+    function getCastProfile(charName) {
+        return DIALOG_CAST[charName] || DIALOG_CAST.System;
+    }
+    function drawDialogPortrait(charName) {
+        if (!dialogPortraitCtx || !ui.dialogPortrait) return;
+        const profile = getCastProfile(charName);
+        const w = ui.dialogPortrait.width;
+        const h = ui.dialogPortrait.height;
+        dialogPortraitCtx.clearRect(0, 0, w, h);
+        const bg = dialogPortraitCtx.createLinearGradient(0, 0, w, h);
+        bg.addColorStop(0, profile.colorA);
+        bg.addColorStop(1, profile.colorB);
+        dialogPortraitCtx.fillStyle = bg;
+        dialogPortraitCtx.fillRect(0, 0, w, h);
+        for (let i = 0; i < 15; i++) {
+            const px = (i * 31 + charName.length * 17) % w;
+            const py = (i * 23 + charName.length * 11) % h;
+            dialogPortraitCtx.fillStyle = 'rgba(255,255,255,0.14)';
+            dialogPortraitCtx.fillRect(px, py, 2, 2);
+        }
+        const cx = w / 2;
+        const cy = h / 2;
+        dialogPortraitCtx.strokeStyle = 'rgba(255,255,255,0.25)';
+        dialogPortraitCtx.lineWidth = 2;
+        if (profile.type === 'cat') {
+            dialogPortraitCtx.fillStyle = '#f2e4c7';
+            dialogPortraitCtx.beginPath();
+            dialogPortraitCtx.moveTo(cx - 36, cy - 28);
+            dialogPortraitCtx.lineTo(cx - 15, cy - 50);
+            dialogPortraitCtx.lineTo(cx - 8, cy - 18);
+            dialogPortraitCtx.closePath();
+            dialogPortraitCtx.fill();
+            dialogPortraitCtx.beginPath();
+            dialogPortraitCtx.moveTo(cx + 36, cy - 28);
+            dialogPortraitCtx.lineTo(cx + 15, cy - 50);
+            dialogPortraitCtx.lineTo(cx + 8, cy - 18);
+            dialogPortraitCtx.closePath();
+            dialogPortraitCtx.fill();
+            dialogPortraitCtx.beginPath();
+            dialogPortraitCtx.arc(cx, cy, 34, 0, Math.PI * 2);
+            dialogPortraitCtx.fill();
+            dialogPortraitCtx.fillStyle = '#2d2d2d';
+            dialogPortraitCtx.beginPath();
+            dialogPortraitCtx.arc(cx - 12, cy - 4, 4, 0, Math.PI * 2);
+            dialogPortraitCtx.arc(cx + 12, cy - 4, 4, 0, Math.PI * 2);
+            dialogPortraitCtx.fill();
+            dialogPortraitCtx.strokeStyle = '#2d2d2d';
+            dialogPortraitCtx.beginPath();
+            dialogPortraitCtx.moveTo(cx - 18, cy + 10);
+            dialogPortraitCtx.lineTo(cx + 18, cy + 10);
+            dialogPortraitCtx.stroke();
+        } else if (profile.type === 'visor') {
+            dialogPortraitCtx.fillStyle = '#dbe4ff';
+            dialogPortraitCtx.fillRect(cx - 35, cy - 32, 70, 72);
+            dialogPortraitCtx.fillStyle = '#1b2f66';
+            dialogPortraitCtx.fillRect(cx - 26, cy - 14, 52, 16);
+            dialogPortraitCtx.fillStyle = '#7ff8ff';
+            dialogPortraitCtx.fillRect(cx - 23, cy - 11, 46, 10);
+            dialogPortraitCtx.strokeRect(cx - 35, cy - 32, 70, 72);
+        } else if (profile.type === 'ghost') {
+            dialogPortraitCtx.fillStyle = '#f7ecff';
+            dialogPortraitCtx.beginPath();
+            dialogPortraitCtx.arc(cx, cy - 6, 30, Math.PI, 0);
+            dialogPortraitCtx.lineTo(cx + 30, cy + 30);
+            dialogPortraitCtx.lineTo(cx + 16, cy + 22);
+            dialogPortraitCtx.lineTo(cx + 5, cy + 30);
+            dialogPortraitCtx.lineTo(cx - 8, cy + 22);
+            dialogPortraitCtx.lineTo(cx - 21, cy + 30);
+            dialogPortraitCtx.lineTo(cx - 30, cy + 20);
+            dialogPortraitCtx.closePath();
+            dialogPortraitCtx.fill();
+            dialogPortraitCtx.fillStyle = '#2d2d2d';
+            dialogPortraitCtx.beginPath();
+            dialogPortraitCtx.arc(cx - 10, cy - 6, 4, 0, Math.PI * 2);
+            dialogPortraitCtx.arc(cx + 10, cy - 6, 4, 0, Math.PI * 2);
+            dialogPortraitCtx.fill();
+        } else if (profile.type === 'toaster') {
+            dialogPortraitCtx.fillStyle = '#e7d8b6';
+            dialogPortraitCtx.fillRect(cx - 34, cy - 26, 68, 58);
+            dialogPortraitCtx.strokeRect(cx - 34, cy - 26, 68, 58);
+            dialogPortraitCtx.fillStyle = '#544229';
+            dialogPortraitCtx.fillRect(cx - 20, cy - 17, 40, 8);
+            dialogPortraitCtx.fillStyle = '#9e8054';
+            dialogPortraitCtx.fillRect(cx + 34, cy - 5, 8, 20);
+            dialogPortraitCtx.fillStyle = '#f5efdd';
+            dialogPortraitCtx.fillRect(cx - 16, cy - 32, 32, 12);
+        } else if (profile.type === 'orb') {
+            dialogPortraitCtx.fillStyle = '#d6f7ff';
+            dialogPortraitCtx.beginPath();
+            dialogPortraitCtx.arc(cx, cy, 30, 0, Math.PI * 2);
+            dialogPortraitCtx.fill();
+            dialogPortraitCtx.strokeStyle = '#7ae6ff';
+            dialogPortraitCtx.beginPath();
+            dialogPortraitCtx.arc(cx, cy, 40, 0, Math.PI * 2);
+            dialogPortraitCtx.stroke();
+        } else {
+            dialogPortraitCtx.fillStyle = '#ffe0be';
+            dialogPortraitCtx.beginPath();
+            dialogPortraitCtx.arc(cx, cy - 3, 30, 0, Math.PI * 2);
+            dialogPortraitCtx.fill();
+            dialogPortraitCtx.fillStyle = '#392515';
+            dialogPortraitCtx.beginPath();
+            dialogPortraitCtx.arc(cx - 10, cy - 7, 4, 0, Math.PI * 2);
+            dialogPortraitCtx.arc(cx + 10, cy - 7, 4, 0, Math.PI * 2);
+            dialogPortraitCtx.fill();
+            dialogPortraitCtx.strokeStyle = '#392515';
+            dialogPortraitCtx.beginPath();
+            dialogPortraitCtx.moveTo(cx - 11, cy + 12);
+            dialogPortraitCtx.lineTo(cx + 11, cy + 12);
+            dialogPortraitCtx.stroke();
+        }
+        dialogPortraitCtx.fillStyle = 'rgba(255,255,255,0.75)';
+        dialogPortraitCtx.font = 'bold 11px Trebuchet MS';
+        dialogPortraitCtx.textAlign = 'right';
+        dialogPortraitCtx.fillText(charName.slice(0, 14), w - 7, h - 8);
+    }
+    function setDialogSpeaker(charName) {
+        let speaker = 'System';
+        if (charName !== undefined && charName !== null && String(charName).trim() !== '') {
+            speaker = String(charName);
+        }
+        const profile = getCastProfile(speaker);
+        ui.dialogName.textContent = speaker;
+        if (ui.dialogAvatarTag) {
+            ui.dialogAvatarTag.textContent = speaker;
+        }
+        if (ui.dialogAvatarTag) {
+            ui.dialogAvatarTag.style.borderColor = profile.accent;
+            ui.dialogAvatarTag.style.color = profile.accent;
+        }
+        if (ui.dialogName) {
+            ui.dialogName.style.color = profile.accent;
+        }
+        if (ui.dialogTalkIcon) {
+            ui.dialogTalkIcon.style.borderColor = profile.accent;
+            ui.dialogTalkIcon.style.boxShadow = '0 0 8px ' + profile.accent + '55';
+        }
+        // хз почему, но если не обновлять портрет тут - иногда дергается
+        drawDialogPortrait(speaker);
+    }
     function showDialog(dialogSet) {
         if (!Array.isArray(dialogSet) || !dialogSet.length) return;
         game.dialog.activeSet = dialogSet;
@@ -1170,28 +1463,42 @@ body {
         renderDialogStep();
     }
     function renderDialogStep() {
-        const step = game.dialog.activeSet ? game.dialog.activeSet[game.dialog.index] : null;
-        if (!step) {
+        let step = null;
+        if (game.dialog.activeSet) {
+            const maybeIndex = numOr(game.dialog.index, 0);
+            step = game.dialog.activeSet[maybeIndex];
+        } else {
+            step = null;
+        }
+        if (!step || typeof step !== 'object') {
             hideDialog();
             return;
         }
-        ui.dialogName.textContent = step.char || 'System';
-        ui.dialogText.textContent = step.text || '';
+        const who = step.char ? String(step.char) : 'System';
+        let txt = '';
+        if (step.text === undefined || step.text === null) txt = '';
+        else txt = String(step.text);
+        setDialogSpeaker(who);
+        ui.dialogText.textContent = txt;
+        // todo typewriter later maybe
         ui.dialogChoices.innerHTML = '';
         game.dialog.choiceLocked = false;
-        if (Array.isArray(step.choices) && step.choices.length) {
+        const hasChoices = Array.isArray(step.choices) && step.choices.length > 0;
+        if (hasChoices) {
             game.dialog.choiceLocked = true;
-            step.choices.forEach((choice) => {
+            for (let i = 0; i < step.choices.length; i++) {
+                const choice = step.choices[i];
                 const b = document.createElement('button');
                 b.className = 'dialog-choice';
-                b.textContent = choice.label;
+                b.textContent = choice && choice.label ? String(choice.label) : ('Choice ' + (i + 1));
                 b.addEventListener('click', function () {
-                    applyChoiceEffect(choice.effect || {});
+                    const fx = choice && choice.effect ? choice.effect : {};
+                    applyChoiceEffect(fx);
                     game.dialog.choiceLocked = false;
                     nextDialog();
                 });
                 ui.dialogChoices.appendChild(b);
-            });
+            }
         }
     }
     function nextDialog() {
@@ -1211,6 +1518,7 @@ body {
         game.dialog.choiceLocked = false;
         game.pauseReasons.dialog = false;
         ui.dialogBox.classList.add('hidden');
+        if (ui.dialogTalkIcon) ui.dialogTalkIcon.style.boxShadow = 'none';
     }
     function getWeaponBySlot(slot) {
         const found = Object.values(WEAPON_CATALOG).find((w) => w.slot === slot);
@@ -1365,9 +1673,28 @@ body {
         saveProgress(game);
     }
     function confirmNextWave() {
-        if (!game.pauseReasons.wave || game.state !== 'playing') return;
+        const wavePauseOn = !!game.pauseReasons.wave;
+        const canWork = game.state === 'playing';
+        if (!(wavePauseOn && canWork)) return;
+        // tmp debug:
+        // console.log('confirm wave', game.enemyWave, game.pendingWave);
+        let _justForCheck = 0;
+        _justForCheck = _justForCheck + 1;
+        if (game.pauseReasons.dialog) {
+            const dSet = game.dialog.activeSet;
+            const dIdx = numOr(game.dialog.index, 0);
+            const step = dSet ? dSet[dIdx] : null;
+            const needPick = !!(step && step.choices && game.dialog.choiceLocked);
+            if (needPick) {
+                showMessage('Choose a dialog option first.', '#ffb15a');
+                return;
+            }
+            hideDialog();
+        }
         game.pauseReasons.wave = false;
-        game.enemyWave = game.pendingWave || (game.enemyWave + 1);
+        const maybePending = game.pendingWave;
+        if (maybePending) game.enemyWave = maybePending;
+        else game.enemyWave = game.enemyWave + 1;
         game.pendingWave = null;
         game.waveElapsed = 0;
         setupWaveByNoobMath(game.enemyWave);
@@ -1375,8 +1702,12 @@ body {
         ui.weaponShopPanel.classList.add('hidden');
         ui.metaShopPanel.classList.add('hidden');
         applyWaveModifier(game.enemyWave);
-        if (game.enemyWave % game.modeConfig.bossEvery === 0) spawnBossForWave(game.enemyWave);
-        else game.audio.setMusicState('wave');
+        const every = numOr(game.modeConfig.bossEvery, 3);
+        if ((game.enemyWave % every) === 0) {
+            spawnBossForWave(game.enemyWave);
+        } else {
+            game.audio.setMusicState('wave');
+        }
         showMessage('Wave ' + game.enemyWave + ' started', '#2ef3ff');
         updateHUD();
         saveProgress(game);
@@ -1544,6 +1875,7 @@ body {
         }
     }
     function updateEnemies(dt) {
+        // NOTE: логика старая, но трогать опасно перед релизом
         for (let i = game.enemies.length - 1; i >= 0; i--) {
             const enemy = game.enemies[i];
             if (enemy.hp <= 0) {
@@ -1560,6 +1892,7 @@ body {
                 const dist = Math.max(0.0001, Math.hypot(dx, dy));
                 const ux = dx / dist;
                 const uy = dy / dist;
+                // var testAggro = dist < 250; // maybe later
                 if (enemy.typeId === 'grunt' || enemy.typeId === 'tank' || enemy.typeId === 'splitter' || enemy.typeId === 'mini') {
                     enemy.x += ux * enemy.speed * dt;
                     enemy.y += uy * enemy.speed * dt;
@@ -1632,7 +1965,7 @@ body {
     }
     function updateResources(dt) {
         for (let i = game.resourcesOnMap.length - 1; i >= 0; i--) {
-            const r = game.resourcesOnMap[i];
+            var r = game.resourcesOnMap[i];
             const dx = game.player.x - r.x;
             const dy = game.player.y - r.y;
             const dist = Math.hypot(dx, dy);
@@ -1672,22 +2005,36 @@ body {
         }
     }
     function updateWaveFlow(dt, nowMs) {
+        // 3й раз переписываю эту функцию, не трогай если "просто работает"
         updateSpawnQueue(nowMs);
-        game.waveElapsed += dt;
-        let baseRate = 0.65 + game.enemyWave * 0.17;
-        if (game.mode === 'bossrush') baseRate *= 0.82;
-        if (game.waveSpawned < game.waveSpawnTarget) {
-            game.spawnAccumulator += dt * baseRate * game.waveEffects.spawnRate;
+        game.waveElapsed = numOr(game.waveElapsed, 0) + numOr(dt, 0);
+        let baseRate = 0.65 + numOr(game.enemyWave, 1) * 0.17;
+        if (String(game.mode) === 'bossrush') {
+            baseRate = baseRate * 0.82;
+        } else {
+            baseRate = baseRate * 1;
         }
-        while (game.spawnAccumulator >= 1 && game.waveSpawned < game.waveSpawnTarget) {
+       // old formula maybe:
+       // baseRate = baseRate + game.enemyWave*0.01;
+        const stillNeedSpawn = numOr(game.waveSpawned, 0) < numOr(game.waveSpawnTarget, 0);
+        if (stillNeedSpawn) {
+            const spawnRate = numOr(game.waveEffects.spawnRate, 1);
+            game.spawnAccumulator = numOr(game.spawnAccumulator, 0) + numOr(dt, 0) * baseRate * spawnRate;
+        }
+        let guard = 999;
+        while (game.spawnAccumulator >= 1 && numOr(game.waveSpawned, 0) < numOr(game.waveSpawnTarget, 0)) {
             queueRandomEnemySpawn();
-            game.waveSpawned += 1;
-            game.spawnAccumulator -= 1;
+            game.waveSpawned = numOr(game.waveSpawned, 0) + 1;
+            game.spawnAccumulator = numOr(game.spawnAccumulator, 0) - 1;
+            guard -= 1;
+            if (guard <= 0) break;
         }
-        const allQueued = game.waveSpawned >= game.waveSpawnTarget;
-        const noPending = game.spawnTickets.length === 0;
-        const noLiveEnemies = game.enemies.length === 0;
-        if (allQueued && noPending && noLiveEnemies) {
+        const allQueued = numOr(game.waveSpawned, 0) >= numOr(game.waveSpawnTarget, 0);
+        const noPending = (game.spawnTickets.length === 0);
+        const noLiveEnemies = (game.enemies.length === 0);
+        const mayPause = allQueued && noPending && noLiveEnemies;
+        // console.log('wave check', allQueued, noPending, noLiveEnemies);
+        if (mayPause) {
             startWavePause();
         }
     }
@@ -1704,7 +2051,7 @@ body {
             ctx.fillStyle = 'rgba(140,180,255,0.45)';
             ctx.fillRect(s.x, s.y, s.s, s.s);
         }
-        const grad = ctx.createLinearGradient(0, 0, 0, game.height);
+        var grad = ctx.createLinearGradient(0, 0, 0, game.height);
         grad.addColorStop(0, 'rgba(0,0,0,0)');
         grad.addColorStop(1, 'rgba(0,12,25,0.35)');
         ctx.fillStyle = grad;
@@ -1763,6 +2110,7 @@ body {
                 ctx.textAlign = 'center';
                 ctx.fillText(enemy.eliteData.name, enemy.x, enemy.y - enemy.size - 16);
             }
+            // todo maybe hp bars with gradient
             if (enemy.typeId === 'boss') {
                 ctx.strokeStyle = 'rgba(255,214,111,0.7)';
                 ctx.lineWidth = 2;
@@ -1804,6 +2152,7 @@ body {
         ctx.closePath();
         ctx.fillStyle = '#1a89a2';
         ctx.fill();
+        // todo engine glow maybe
         ctx.beginPath();
         ctx.arc(4, 0, 4, 0, Math.PI * 2);
         ctx.fillStyle = '#ffffff';
@@ -1849,7 +2198,7 @@ body {
         if (game.player) {
             game.player.x = clamp(game.player.x, game.player.radius + 2, game.width - game.player.radius - 2);
             game.player.y = clamp(game.player.y, game.player.radius + 2, game.height - game.player.radius - 2);
-        }
+        } // old clamp fix, не убирать
         setupStars();
     }
     function toCanvasCoords(ev) {
@@ -1912,21 +2261,42 @@ body {
         showMessage('Progress reset to defaults', '#ffb15a');
     }
     function handleActionPress(code) {
-        if (codeMatchesAction(code, 'ability_dash')) activateAbility('dash');
-        if (codeMatchesAction(code, 'ability_shield')) activateAbility('shield');
-        if (codeMatchesAction(code, 'ability_emp')) activateAbility('emp');
-        if (codeMatchesAction(code, 'weapon_1')) tryEquipBySlot(1);
-        if (codeMatchesAction(code, 'weapon_2')) tryEquipBySlot(2);
-        if (codeMatchesAction(code, 'weapon_3')) tryEquipBySlot(3);
-        if (codeMatchesAction(code, 'open_shop')) {
-            if (game.pauseReasons.wave) showWeaponShop(ui.weaponShopPanel.classList.contains('hidden'));
-            else showMessage('Shop can be opened during wave pause.', '#ffb15a');
+        const k = String(code || '');
+          // TODO maybe refactor later... works now dont touch
+        var acts = {
+            d: checkKey(k, 'ability_dash'),
+            s: keyIs(k, 'ability_shield'),
+            e: checkKey(k, 'ability_emp'),
+            w1: keyIs(k, 'weapon_1'),
+            w2: keyIs(k, 'weapon_2'),
+            w3: keyIs(k, 'weapon_3'),
+            shop: checkKey(k, 'open_shop'),
+            go: keyIs(k, 'confirm_wave'),
+            esc: keyIs(k, 'pause_menu')
+        };
+       if (acts.d) activateAbility('dash');
+        if (acts.s) activateAbility('shield');
+        if (acts.e) activateAbility('emp');
+        if (acts.w1) tryEquipBySlot(1);
+      if (acts.w2) tryEquipBySlot(2);
+        if (acts.w3) tryEquipBySlot(3);
+        if (acts.shop) {
+            const canOpen = game.pauseReasons.wave;
+            if (canOpen) {
+                const isHidden = ui.weaponShopPanel.classList.contains('hidden');
+                showWeaponShop(isHidden);
+                // TODO: а что если оба шопа открыты? потом разберусь
+            } else {
+                showMessage('Shop can be opened during wave pause.', '#ffb15a');
+            }
         }
-        if (codeMatchesAction(code, 'confirm_wave')) {
-            if (game.pauseReasons.wave) confirmNextWave();
-            else if (game.pauseReasons.dialog) nextDialog();
+        if (acts.go) {
+            const inWavePause = !!game.pauseReasons.wave;
+            const inDialog = !!game.pauseReasons.dialog;
+            if (inWavePause) confirmNextWave();
+            else if (inDialog) nextDialog();
         }
-        if (codeMatchesAction(code, 'pause_menu')) {
+      if (acts.esc) {
             if (game.awaitingBindAction) finishRebind(true);
             else if (game.pauseReasons.dialog) hideDialog();
             else if (game.pauseReasons.wave) {
@@ -1934,10 +2304,13 @@ body {
                 ui.metaShopPanel.classList.add('hidden');
             }
         }
-        if ((code === 'Enter' || code === 'Space') && game.pauseReasons.dialog) nextDialog();
+        const enterOrSpace = (k === 'Enter' || k === 'Space');
+        if (enterOrSpace && game.pauseReasons.dialog) nextDialog();
     }
     function bindEvents() {
+        // костыльный блок событий
         window.addEventListener('resize', resizeCanvas);
+        var oldMouseDown = false; // legacy note
         ui.canvas.addEventListener('mousemove', (ev) => {
             const p = toCanvasCoords(ev);
             game.mouse.x = p.x;
@@ -1945,10 +2318,11 @@ body {
         });
         ui.canvas.addEventListener('mousedown', () => {
             game.mouse.down = true;
+            oldMouseDown = true;
             game.audio.ensureContext(game.save);
         });
-        window.addEventListener('mouseup', () => { game.mouse.down = false; });
-        ui.canvas.addEventListener('mouseleave', () => { game.mouse.down = false; });
+        window.addEventListener('mouseup', () => { game.mouse.down = false; oldMouseDown = false; });
+        ui.canvas.addEventListener('mouseleave', () => { game.mouse.down = false; if (oldMouseDown) oldMouseDown = false; });
         window.addEventListener('keydown', (ev) => {
             if (processRebindKey(ev.code)) {
                 ev.preventDefault();
@@ -1961,6 +2335,7 @@ body {
         window.addEventListener('keyup', (ev) => {
             game.keysDown.delete(ev.code);
         });
+        // todo cleanup listeners? maybe not needed
         ui.startBtn.addEventListener('click', startGame);
         ui.startFromMenuBtn.addEventListener('click', startGame);
         ui.restartBtn.addEventListener('click', startGame);
@@ -2061,6 +2436,7 @@ body {
         requestAnimationFrame(gameLoop);
     }
     function init() {
+        // init 2.0 // раньше тут было вообще 20 строк ада
         bindEvents();
         resizeCanvas();
         setMode(ui.modeSelect.value);
@@ -2074,6 +2450,7 @@ body {
         resetRunState();
         applyWaveModifier(1);
         goToMenu();
+        // todo maybe preload tiny beep here
         requestAnimationFrame(gameLoop);
     }
     window.scheduleEnemySpawn = scheduleEnemySpawn;
@@ -2093,3 +2470,4 @@ body {
 </script>
 </body>
 </html>
+
