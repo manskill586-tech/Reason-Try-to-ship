@@ -5,10 +5,13 @@
 2. Press `Start Run`.
 
 3. Controls:
-- Move: `WASD` (arrow keys aliases are supported)
+- Move: `WASD` (arrows also work)
 - Aim: mouse
-- Fire: mouse button / `Space`
+- Fire: mouse / `Space`
 - Abilities: `Z`, `X`, `C`
-- Weapon slots: `1`, `2`, `3`
+- Weapon quick slots: `1`, `2`, `3`
+- Active item slots: `Q`, `E`, `R`
+- Confirm wave: `Enter` (or bind)
+- Open shop: `B` (or bind)
 
 5. Put 5/5 on the site :)
