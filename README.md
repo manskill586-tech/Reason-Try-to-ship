@@ -171,4 +171,6 @@ If progress looks missing:
 - Check correct save slot.
 - Use `Continue` for run snapshots.
 
+## 13) Last Step
+
 Aaand finally, the last step: Put a 9/9 on my project plzzz :>
