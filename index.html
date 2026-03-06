@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -3832,12 +3831,19 @@ input[type="range"].input::-moz-range-thumb {
         const key = (action) => formatCode(getActionCode(action));
         const line = (name, action) => name + ': ' + key(action);
         const sections = [
-            'HOW TO PLAY',
+            'BEGINNER GUIDE',
             '',
-            'Goal:',
-            'Survive waves, defeat bosses, upgrade your build, and keep shipping.',
+            'Core Goal:',
+            'Survive waves -> buy upgrades -> beat bosses -> push higher waves.',
             '',
-            'Core Controls:',
+            'Quick Start (first 60 seconds):',
+            '1) Press Start Run',
+            '2) Move and keep firing',
+            '3) Use Dash/Shield/EMP when needed',
+            '4) Buy upgrades during wave pause',
+            '5) Confirm next wave',
+            '',
+            'Movement + Fire:',
             line('Move Up', 'move_up'),
             line('Move Down', 'move_down'),
             line('Move Left', 'move_left'),
@@ -3849,7 +3855,7 @@ input[type="range"].input::-moz-range-thumb {
             line('Shield', 'ability_shield'),
             line('EMP', 'ability_emp'),
             '',
-            'Items and Weapons:',
+            'Items + Weapons:',
             line('Item Slot 1', 'item_slot_1'),
             line('Item Slot 2', 'item_slot_2'),
             line('Item Slot 3', 'item_slot_3'),
@@ -3857,19 +3863,24 @@ input[type="range"].input::-moz-range-thumb {
             line('Weapon Slot 2', 'weapon_2'),
             line('Weapon Slot 3', 'weapon_3'),
             '',
-            'Wave / Utility:',
+            'Wave + Utility:',
             line('Open Shop (wave pause)', 'open_shop'),
             line('Confirm / Next Wave', 'confirm_wave'),
             line('Quick Save', 'quick_save'),
             line('Pause / Escape', 'pause_menu'),
             '',
-            'Tips:',
-            '1. During wave pause, buy upgrades first, then confirm next wave.',
-            '2. Keep Shield for burst damage and EMP for crowded moments.',
-            '3. Switch weapon slots based on enemy density and boss phases.',
+            'New Player Tips:',
+            '1. Do not stand still.',
+            '2. Save Shield for big incoming damage.',
+            '3. Use EMP when enemies are grouped.',
+            '4. Spend Resources every wave pause.',
+            '5. Use Meta Credits for permanent unlocks.',
             '',
             'Mobile:',
-            'Use virtual joystick + arcade buttons on screen.'
+            'Use virtual joystick + arcade buttons on screen.',
+            '',
+            'Need full docs?',
+            'Open README.md from project root.'
         ];
         return sections.join('\n');
     }
@@ -11629,17 +11640,6 @@ input[type="range"].input::-moz-range-thumb {
     window.rc = runCheatCommand;
     init();
 })();
-
-
-
-
-
-
-
-
-
-
-
 
 
 
